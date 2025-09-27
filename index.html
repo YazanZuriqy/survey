@@ -36,19 +36,22 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">اسم المستخدم</label>
                     <input type="text" id="username" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="أدخل اسم المستخدم">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
                     <input type="password" id="password" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="أدخل كلمة المرور">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">اسم المدرسة</label>
                     <input type="text" id="schoolName" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="أدخل اسم المدرسة">
                 </div>
                 
                 <div id="securityCodeDiv" class="hidden">
@@ -85,87 +88,72 @@
                 
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">استبيان أولياء الأمور</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold">استبيان أولياء الأمور</h3>
+                            <span id="donut-parents"></span>
+                        </div>
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
                             <p class="text-sm break-all" id="parentsLink"></p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyLink('parents')" 
-                                    class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                                نسخ الرابط
-                            </button>
-                            <button onclick="viewResponses('parents')" 
-                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
-                                عرض الردود (<span id="parentsCount">0</span>)
-                            </button>
+                            <button onclick="copyLink('parents')" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">نسخ الرابط</button>
+                            <button onclick="viewResponses('parents')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">عرض الردود (<span id="parentsCount">0</span>)</button>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">استبيان الكادر المدرسي</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold">استبيان الكادر المدرسي</h3>
+                            <span id="donut-staff"></span>
+                        </div>
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
                             <p class="text-sm break-all" id="staffLink"></p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyLink('staff')" 
-                                    class="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                                نسخ الرابط
-                            </button>
-                            <button onclick="viewResponses('staff')" 
-                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
-                                عرض الردود (<span id="staffCount">0</span>)
-                            </button>
+                            <button onclick="copyLink('staff')" class="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">نسخ الرابط</button>
+                            <button onclick="viewResponses('staff')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">عرض الردود (<span id="staffCount">0</span>)</button>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">استبيان الطلبة الصفوف 1-4</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold">استبيان الطلبة الصفوف 1-4</h3>
+                            <span id="donut-students_1_4"></span>
+                        </div>
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
                             <p class="text-sm break-all" id="students1_4Link"></p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyLink('students_1_4')" 
-                                    class="bg-white text-yellow-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                                نسخ الرابط
-                            </button>
-                            <button onclick="viewResponses('students_1_4')" 
-                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
-                                عرض الردود (<span id="students1_4Count">0</span>)
-                            </button>
+                            <button onclick="copyLink('students_1_4')" class="bg-white text-yellow-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">نسخ الرابط</button>
+                            <button onclick="viewResponses('students_1_4')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">عرض الردود (<span id="students1_4Count">0</span>)</button>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-r from-indigo-400 to-indigo-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">استبيان الطلبة الصفوف الأكاديمية 5-12</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold">استبيان الطلبة الصفوف الأكاديمية 5-12</h3>
+                            <span id="donut-students_5_12"></span>
+                        </div>
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
                             <p class="text-sm break-all" id="students5_12Link"></p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyLink('students_5_12')" 
-                                    class="bg-white text-indigo-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                                نسخ الرابط
-                            </button>
-                            <button onclick="viewResponses('students_5_12')" 
-                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
-                                عرض الردود (<span id="students5_12Count">0</span>)
-                            </button>
+                            <button onclick="copyLink('students_5_12')" class="bg-white text-indigo-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">نسخ الرابط</button>
+                            <button onclick="viewResponses('students_5_12')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">عرض الردود (<span id="students5_12Count">0</span>)</button>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-r from-pink-400 to-pink-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">استبيان الطلبة الصفوف المهنية 10-12</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold">استبيان الطلبة الصفوف المهنية 10-12</h3>
+                            <span id="donut-students_vocational"></span>
+                        </div>
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
                             <p class="text-sm break-all" id="studentsVocationalLink"></p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyLink('students_vocational')" 
-                                    class="bg-white text-pink-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                                نسخ الرابط
-                            </button>
-                            <button onclick="viewResponses('students_vocational')" 
-                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
-                                عرض الردود (<span id="studentsVocationalCount">0</span>)
-                            </button>
+                            <button onclick="copyLink('students_vocational')" class="bg-white text-pink-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">نسخ الرابط</button>
+                            <button onclick="viewResponses('students_vocational')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">عرض الردود (<span id="studentsVocationalCount">0</span>)</button>
                         </div>
                     </div>
                 </div>
@@ -276,30 +264,28 @@
             'parents': {
                 title: 'استبيان آراء أولياء الأمور ومقدمي الرعاية لمراجعة أداء المدرسة',
                 intro: `
-                    <p class="text-lg font-semibold text-gray-800 mb-4">السيد ولي أمر ومقدم الرعاية المحترم</p>
-                    <p class="text-gray-700 mb-4">تعمل مدرسة: <span id="surveySchoolName" class="font-bold text-blue-600"></span> على تحسين جودة تعلم أبنائنا الطلبة وتعليمهم. لذا نحتاج مساعدتك في المشاركة في هذا الاستطلاع، فرأيك سيساهم في فهم شامل لنقاط القوة ومجالات التطوير داخل مجتمع مدرستنا، وكيف يمكن تلبية احتياجات طلبتنا بشكل أفضل؟</p>
-                    
-                    <div class="text-right space-y-2">
-                        <p><strong>أ.</strong> ستكون إجاباتك على الاستبيان سرية ولن تستخدم إلا لأغراض تحسين المدرسة والتخطيط لها.</p>
-                        <p><strong>ب.</strong> من فضلك خذ بضع الوقت للتفكير في تجاربك ووجهة نظرك عند كل سؤال.</p>
-                        <p><strong>ج.</strong> حدد الإجابة أو الإجابات -لكل سؤال-التي تتوافق بشكل أفضل مع شعورك وملاحظتك.</p>
-                        <p><strong>د.</strong> لا تتردد في اختيار أكثر من خيار واحد إذا اقتضى الأمر.</p>
-                    </div>
+السيد ولي أمر ومقدم الرعاية المحترم
+<br>تعمل مدرسة: <span id="surveySchoolName" class="font-bold text-blue-600"></span> على تحسين جودة تعلم أبنائنا الطلبة وتعليمهم. لذا نحتاج مساعدتك في المشاركة في هذا الاستطلاع، فرأيك سيساهم في فهم شامل لنقاط القوة ومجالات التطوير داخل مجتمع مدرستنا، وكيف يمكن تلبية احتياجات طلبتنا بشكل أفضل؟<br>
+لذا نرجو ما يأتي:<br>
+أ. ستكون إجاباتك على الاستبيان سرية ولن تستخدم إلا لأغراض تحسين المدرسة والتخطيط لها.<br>
+ب. من فضلك خذ بضع الوقت للتفكير في تجاربك ووجهة نظرك عند كل سؤال.<br>
+ج. حدد الإجابة أو الإجابات -لكل سؤال-التي تتوافق بشكل أفضل مع شعورك وملاحظتك.<br>
+د. لا تتردد في اختيار أكثر من خيار واحد إذا اقتضى الأمر.
                 `,
                 personalInfo: [
                     {
                         id: 'gender',
-                        label: 'الجنس',
+                        label: 'جنس ولي الأمر أو مقدم الرعاية',
                         type: 'select',
                         options: [
-                            { value: 'father', text: 'الأب' },
                             { value: 'mother', text: 'الأم' },
-                            { value: 'other', text: 'مقدم الرعاية' }
+                            { value: 'father', text: 'الأب' },
+                            { value: 'other', text: 'مقدم رعاية (غير الأب والأم)' }
                         ]
                     },
                     {
                         id: 'childrenCount',
-                        label: 'عدد الأبناء الملتحقين في هذه المدرسة',
+                        label: 'عدد أبنائك الملتحقين بهذه المدرسة',
                         type: 'number'
                     }
                 ],
@@ -314,13 +300,20 @@
                     "توفر المدرسة الدعم المناسب لاحتياجات التعلم الخاصة بأبنائي",
                     "ممارسات التقييم (مثل: الاختبارات والواجبات) عادلة وشفافة وتعمل بشكل جيد للتحقق من مدى جودة تعلم أبنائي",
                     "تساعدني المدرسة في معرفة كيفية دعم تعلم أبنائي في المنزل",
-                    "أنا راضٍ عن الطريقة التي تستخدمها المدرسة لحماية أبنائي وحل مشاكل مثل: التنمر والتخريب والعنف",
-                    "المدرسة تحترم رأيي وتشركني في حل مشكلات أبنائي النفسية والاجتماعية وتعزيز نموهم الاجتماعي والعاطفي",
-                    "تقدم المدرسة أنشطة قيادية كافية للطلبة، مثل: برلمان الطلبة، والإذاعة المدرسية، والمشاركة في صنع القرار",
-                    "تقدم المدرسة أنشطة إثرائية كافية للطلبة؟ (مثل: الأندية والمسابقات الرياضية والمعارض الفنية)",
-                    "تتعاون المدرسة بفاعلية مع المجتمع المحلي، وتسهل مساهمتهم الإيجابية، وشراكتهم لدعم خطة تحسين المدرسة",
-                    "توفر المدرسة فرصًا كافية للمجتمع للوصول إلى المدرسة أو استخدام مرافقها: للأغراض الترفيهية أو التعليمية للبالغين",
-                    "أنا على علم بالخطة التطويرية للمدرسة، ولدي فرص للمساهمة في تحسينها وتنفيذها"
+                    "أنا راضٍ عن الطريقة التي تستخدمها المدرسة لحماية أبنائي وحل مشاكل مثل: التنمر والتخريب والعنف.",
+                    "المدرسة تحترم رأيي وتشركني في حل مشكلات أبنائي النفسية والاجتماعية وتعزيز نموهم الاجتماعي والعاطفي.",
+                    "تقدم المدرسة أنشطة قيادية كافية للطلبة، مثل: برلمان الطلبة، والإذاعة المدرسية، والمشاركة في صنع القرار.",
+                    "تقدم المدرسة أنشطة إثرائية كافية للطلبة (مثل: الأندية والمسابقات الرياضية والمعارض الفنية).",
+                    "تتعاون المدرسة بفاعلية مع المجتمع المحلي، وتسهل مساهمتهم الإيجابية، وشراكتهم لدعم خطة تحسين المدرسة.",
+                    "توفر المدرسة فرصًا كافية للمجتمع للوصول إلى المدرسة أو استخدام مرافقها: للأغراض الترفيهية أو التعليمية للبالغين.",
+                    "أنا على علم بالخطة التطويرية للمدرسة، ولدي فرص للمساهمة في تحسينها وتنفيذها."
+                ],
+                extraQuestions: [
+                    {
+                        type: 'textlist',
+                        label: 'يرجى ذكر أي اقتراحات أو ملاحظات إضافية لتحسين المدرسة:',
+                        count: 2
+                    }
                 ]
             },
             'staff': {
@@ -363,14 +356,10 @@
                 ]
             },
             'students_5_12': {
-                title: 'استبيان آراء الطلبة للصفوف الأكاديمية 5-12',
+                title: 'استبيان الطلبة – الصفوف الأكاديمية (الخامس حتى الثاني عشر)',
                 intro: `
-                    <p class="text-lg font-semibold text-gray-800 mb-4">عزيزي الطالب/عزيزتي الطالبة</p>
-                    <p class="text-gray-700 mb-4">نود معرفة رأيك حول مدرستك وتجربتك فيها. إجاباتك ستساعدنا في تحسين المدرسة وجعلها مكانًا أفضل للجميع.</p>
-                    <div class="text-right space-y-2">
-                        <p><strong>أ.</strong> إجاباتك سرية ولن تستخدم إلا لتحسين المدرسة.</p>
-                        <p><strong>ب.</strong> أجب بصراحة واختَر ما يعبر عن رأيك.</p>
-                    </div>
+عزيزي الطالب: نسعى إلى معرفة تجربتك في المدرسة، فإجابتك الصحيحة تساعدنا على تحسين مدرستنا وجعلها أفضل لك ولأصدقائك الآخرين. اقرأ الفقرات الآتية، ثم اختر الخيار المناسب لكل فقرة، والذي يحدد رأيك في الاستجابة للفقرة:
+<br><b>الخيار:</b> موافق بشدة – موافق – غير موافق – غير موافق بشدة
                 `,
                 personalInfo: [
                     {
@@ -395,23 +384,52 @@
                     }
                 ],
                 questions: [
-                    "أشعر بالأمان في المدرسة",
-                    "المدرسة توفر بيئة تعليمية جيدة",
-                    "المعلمون يشجعونني على التفكير والإبداع",
-                    "أشعر أن رأيي يُحترم في المدرسة",
-                    "هناك أنشطة مدرسية متنوعة تناسب اهتماماتي",
-                    "أشعر أن المدرسة تساعدني على تطوير مهاراتي للمستقبل"
+                    "أحب الذهاب إلى المدرسة.",
+                    "أشعر بالراحة والأمان في الغرفة الصفية.",
+                    "الغرف الصفية نظيفة ومبهجة ومناسبة للتعلم.",
+                    "دورات المياه في مدرستي نظيفة وآمنة وتتمتع بالخصوصية ويتم صيانتها بشكل جيد.",
+                    "يعاملني المعلمون باحترام.",
+                    "أنشطتي التعليمية ودروسي مفيدة وسهلة الفهم.",
+                    "يُعِدّ المعلمون دروسًا باستخدام أجهزة الحاسوب والإنترنت لمساعدتي على التعلم.",
+                    "يُعِدّ المعلمون دروسًا تمكنني من العمل مع طلاب آخرين في المدرسة لأتعلم شيئًا جديدًا.",
+                    "أشعر بالراحة عندما أطلب المساعدة من المعلمين في فهم دروسي ولا أتحرج من ذلك.",
+                    "يشرح لي المعلمون آلية عملية التقييم ووضع العلامات للمهام والواجبات المنزلية.",
+                    "يقدم لي المعلمون التغذية الراجعة والملاحظات عن اختباراتي وواجباتي لمساعدتي على التعلم.",
+                    "في المناقشات الصفية يشجعني المعلمون على التعبير عن آرائي بحرية.",
+                    "يساعدني المعلمون على التعلم بطرائق متعددة تجعلني أتحمل مسؤولية تعلمي.",
+                    "يشجعني المعلمون على ممارسة الأنشطة القيادية الطلابية.",
+                    "يوجد شخص في المدرسة أستطيع التحدث إليه إذا كان لدي مشكلة شخصية (على سبيل المثال: معلم أثق به أو مرشد).",
+                    "أواجه مشاكل في المدرسة مثل: التنمر، أو التمييز، أو العنف، أو التخريب."
+                ],
+                extraQuestions: [
+                    {
+                        type: 'checkbox',
+                        label: 'أحيانًا أجد مشاكل في طريق الذهاب إلى المدرسة والعودة منها:',
+                        options: [
+                            'مشاكل في المواصلات',
+                            'أتعرض للتنمر أحيانًا في طريقي إلى المدرسة',
+                            'صعوبة الوصول إلى المدرسة في الوقت المحدد',
+                            'أضطر لمغادرة المدرسة مبكرًا',
+                            'لا توجد مشاكل'
+                        ]
+                    },
+                    {
+                        type: 'textlist',
+                        label: 'الأشياء التي أستمتع بها أكثر في المدرسة هي:',
+                        count: 3
+                    },
+                    {
+                        type: 'textlist',
+                        label: 'الأشياء التي أرغب في تحسينها هي:',
+                        count: 3
+                    }
                 ]
             },
             'students_vocational': {
-                title: 'استبيان آراء الطلبة للصفوف المهنية 10-12',
+                title: 'استبيان الطلبة – الصفوف المهنية (العاشر حتى الثاني عشر)',
                 intro: `
-                    <p class="text-lg font-semibold text-gray-800 mb-4">عزيزي الطالب/عزيزتي الطالبة في التعليم المهني</p>
-                    <p class="text-gray-700 mb-4">نود معرفة رأيك حول تجربتك في التعليم المهني. إجاباتك ستساعدنا في تطوير البرامج المهنية وتحسين بيئة التعلم.</p>
-                    <div class="text-right space-y-2">
-                        <p><strong>أ.</strong> إجاباتك سرية ولن تستخدم إلا لتحسين المدرسة.</p>
-                        <p><strong>ب.</strong> أجب بصراحة واختَر ما يعبر عن رأيك.</p>
-                    </div>
+عزيزي الطالب: نسعى إلى معرفة تجربتك في المدرسة ومراكز التدريب، فإجابتك الصادقة تساعدنا على تحسين مدرستنا وجعلها أفضل لك ولأصدقائك الآخرين. اقرأ الفقرات الآتية، ثم اختر الخيار المناسب لكل فقرة، والذي يحدد رأيك في الاستجابة للفقرة:
+<br><b>الخيار:</b> موافق بشدة – موافق – غير موافق – غير موافق بشدة
                 `,
                 personalInfo: [
                     {
@@ -436,12 +454,43 @@
                     }
                 ],
                 questions: [
-                    "أشعر أن البرنامج المهني الذي أدرسه مفيد لي",
-                    "المشاغل والمختبرات المهنية مجهزة بشكل جيد",
-                    "المعلمون في التعليم المهني يدعمونني في تطوير مهاراتي",
-                    "أشعر أن المدرسة توفر فرصًا عملية كافية في البرنامج المهني",
-                    "هناك أنشطة مهنية إضافية تساعدني على التعلم والتطور",
-                    "أشعر أن المدرسة تتابع تقدمي وتدعم نجاحي في البرنامج المهني"
+                    "أحب الذهاب إلى المدرسة.",
+                    "أشعر بالراحة والأمان في مكان التعلم والتدريب.",
+                    "الغرف الصفية والمشاغل نظيفة ومناسبة للتعلم.",
+                    "دورات المياه في مدرستي نظيفة وآمنة وتتمتع بالخصوصية ويتم صيانتها بشكل جيد.",
+                    "يعاملني المعلمون والمدربون باحترام.",
+                    "أنشطتي التعليمية ودروسي مفيدة وسهلة الفهم.",
+                    "يُعِدّ المعلمون دروسًا باستخدام أجهزة الحاسوب والإنترنت لمساعدتي على التعلم.",
+                    "يُعِدّ المعلمون دروسًا تمكنني من العمل مع طلاب آخرين في المدرسة لأتعلم شيئًا جديدًا.",
+                    "أشعر بالراحة عندما أطلب المساعدة من المعلمين في فهم دروسي ولا أتحرج من ذلك.",
+                    "يشرح لي المعلمون آلية عملية التقييم ووضع العلامات للمهام والواجبات المنزلية.",
+                    "يقدم لي المعلمون التغذية الراجعة والملاحظات عن اختباراتي وواجباتي لمساعدتي على التعلم.",
+                    "في المناقشات الصفية يشجعني المعلمون على التعبير عن آرائي بحرية.",
+                    "يساعدني المعلمون على التعلم بطرائق متعددة تجعلني أتحمل مسؤولية تعلمي.",
+                    "يشجعني المعلمون على ممارسة الأنشطة القيادية الطلابية.",
+                    "يوجد شخص في المدرسة أستطيع التحدث إليه إذا كان لدي مشكلة شخصية (على سبيل المثال: معلم أثق به أو مرشد).",
+                    "أواجه مشاكل في المدرسة مثل: التنمر، أو التمييز، أو العنف، أو التخريب.",
+                    "يوظف المعلمون والمدربون التعلم القائم على المشاريع لربط المعرفة النظرية بالتطبيقات العملية الواقعية.",
+                    "توفر المدرسة فرصًا للتعلم المهني التقني للطلبة (مثل: تصميم المواقع الإلكترونية، تصميم برامج إلكترونية).",
+                    "يقوم المعلمون بزيارات دورية إلى أماكن التدريب لمتابعة تعلمي والتأكد من جودة التدريب.",
+                    "يساعدني المعلمون بشكل فردي في تعلم التقييم الذاتي وتحفيزي للتعلم وتحسين تحصيلي.",
+                    "يتابع المعلمون أدائي أثناء تنفيذ المهام ويقدمون التغذية الراجعة المناسبة بحسب مسار التعليم المهني التقني الخاص بي.",
+                    "تقدم المدرسة برامج منظمة للإرشاد والتوجيه تساعد في تنمية شخصيتي والاستجابة لاحتياجاتي النفسية والتعليمية.",
+                    "توفر المدرسة شروط السلامة المهنية في المختبرات والمشاغل المهنية وأماكن التطبيق العملي داخل المدرسة وخارجها (مثل: تعليمات وإرشادات، أدوات وأجهزة السلامة العامة، طفايات حريق، مواد إسعافات أولية).",
+                    "تستثمر الإدارة المدرسية الأعمال الإنتاجية للطلبة بشكل مناسب.",
+                    "تتبنى المدرسة نظامًا عادلًا وشفافًا للتعامل مع اعتراضات وشكاوى الطلبة والكادر المدرسي."
+                ],
+                extraQuestions: [
+                    {
+                        type: 'textlist',
+                        label: 'الأشياء التي أستمتع بها أكثر في المدرسة هي:',
+                        count: 3
+                    },
+                    {
+                        type: 'textlist',
+                        label: 'الأشياء التي أرغب في تحسينها هي:',
+                        count: 3
+                    }
                 ]
             },
             // الاستبيانات الجديدة أغلقت هنا
@@ -607,7 +656,7 @@
             questions.forEach((question, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'bg-gray-50 p-6 rounded-xl';
-                
+
                 let optionsHtml = '';
                 options.forEach(option => {
                     optionsHtml += `
@@ -618,16 +667,58 @@
                         </label>
                     `;
                 });
-                
+
                 questionDiv.innerHTML = `
                     <h4 class="text-lg font-medium text-gray-800 mb-4">${index + 1}. ${question}</h4>
                     <div class="space-y-2">
                         ${optionsHtml}
                     </div>
+                    <div id="donut-question-${index}" class="flex justify-center mt-4"></div>
                 `;
-                
+
                 container.appendChild(questionDiv);
             });
+
+            // بعد توليد الأسئلة، جلب بيانات الرضا لكل سؤال
+            renderQuestionDonuts(surveyType, questions.length);
+    // نهاية generateQuestions
+
+        // رسم دونات إحصائي صغير لنسبة الرضا لكل سؤال
+        async function renderQuestionDonuts(surveyType, questionCount) {
+            if (!currentUser) return;
+            const { data: responses } = await supabase
+                .from('responses')
+                .select('answers')
+                .eq('user_id', currentUser.id)
+                .eq('survey_type', surveyType);
+            for (let i = 0; i < questionCount; i++) {
+                let satisfied = 0, total = 0;
+                if (responses && responses.length > 0) {
+                    responses.forEach(r => {
+                        let answers = r.answers;
+                        if (!answers) return;
+                        if (typeof answers === 'string') {
+                            try { answers = JSON.parse(answers); } catch (e) { return; }
+                        }
+                        if (typeof answers === 'object') {
+                            const val = answers[`question_${i}`];
+                            if (val === 'agree' || val === 'strongly_agree') satisfied++;
+                            if (val) total++;
+                        }
+                    });
+                }
+                const percent = total > 0 ? ((satisfied / total) * 100).toFixed(1) : 0;
+                const donut = `
+<svg width="44" height="44" viewBox="0 0 36 36">
+  <circle cx="18" cy="18" r="16" fill="#f3f4f6" />
+  <circle cx="18" cy="18" r="16" fill="none" stroke="#2563eb" stroke-width="4" stroke-dasharray="${percent * 1.005}, 100" stroke-linecap="round" transform="rotate(-90 18 18)" />
+  <text x="18" y="22" text-anchor="middle" font-size="12" fill="#2563eb" font-weight="bold">${percent}%</text>
+</svg>
+<div class="text-xs text-gray-600 text-center">رضا</div>`;
+                const donutDiv = document.getElementById(`donut-question-${i}`);
+                if (donutDiv) donutDiv.innerHTML = donut;
+            }
+        }
             
             // Generate special question for staff
             if (surveyType === 'staff' && survey.specialQuestion) {
@@ -664,12 +755,23 @@
 
         // Login form handler
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            // عداد محاولات الخطأ في كلمة المرور
+            if (typeof window.failedLoginAttempts === 'undefined') window.failedLoginAttempts = 0;
             e.preventDefault();
             
             const username = document.getElementById('username').value.trim().replace(/\s+/g, '');
             const password = document.getElementById('password').value;
             const schoolName = document.getElementById('schoolName').value.trim();
             const securityCode = document.getElementById('securityCode').value;
+
+            // دالة لإزالة الهمزات من النص
+            function normalizeHamza(str) {
+                return str
+                    .replace(/[أإآا]/g, 'ا')
+                    .replace(/[ؤئ]/g, 'و')
+                    .replace(/[ء]/g, '')
+                    .replace(/[ى]/g, 'ي');
+            }
             
             try {
                 // Check if user exists
@@ -680,14 +782,27 @@
                     .single();
                 
                 if (existingUser) {
-                    // Login existing user - only check password and school name
-                    if (existingUser.password === password && existingUser.school_name === schoolName) {
+                    // Login existing user - ignore hamza in username and password
+                    const inputUsernameNorm = normalizeHamza(username);
+                    const dbUsernameNorm = normalizeHamza(existingUser.username);
+                    const inputPasswordNorm = normalizeHamza(password);
+                    const dbPasswordNorm = normalizeHamza(existingUser.password);
+                    const inputSchoolNorm = normalizeHamza(schoolName);
+                    const dbSchoolNorm = normalizeHamza(existingUser.school_name);
+                    if (dbUsernameNorm === inputUsernameNorm && dbPasswordNorm === inputPasswordNorm && dbSchoolNorm === inputSchoolNorm) {
+                        window.failedLoginAttempts = 0;
                         currentUser = existingUser;
                         localStorage.setItem('currentUser', JSON.stringify(currentUser));
                         showMessage('loginMessage', 'تم تسجيل الدخول بنجاح!', 'success');
                         setTimeout(showDashboard, 1000);
-                    } else if (existingUser.password !== password) {
-                        showMessage('loginMessage', 'كلمة المرور غير صحيحة', 'error');
+                    } else if (dbPasswordNorm !== inputPasswordNorm) {
+                        window.failedLoginAttempts++;
+                        if (window.failedLoginAttempts >= 2) {
+                            showMessage('loginMessage', 'بيانات الدخول غير صحيحة. يرجى المحاولة مرة أخرى.', 'error');
+                        } else {
+                            showMessage('loginMessage', 'كلمة المرور غير صحيحة', 'error');
+                        }
+                        document.getElementById('password').value = '';
                     } else {
                         showMessage('loginMessage', 'اسم المدرسة غير صحيح', 'error');
                     }
@@ -751,6 +866,50 @@
 
         // Load response counts
         async function loadResponseCounts() {
+            // بعد تحميل الأعداد، جلب بيانات الرضا لكل استبانة
+            await renderAllSurveyDonuts();
+        // رسم دونات إحصائي صغير لنسبة الرضا
+        async function renderAllSurveyDonuts() {
+            const surveyTypesList = [
+                { key: 'parents', color: '#2563eb' },
+                { key: 'staff', color: '#22c55e' },
+                { key: 'students_1_4', color: '#eab308' },
+                { key: 'students_5_12', color: '#6366f1' },
+                { key: 'students_vocational', color: '#ec4899' }
+            ];
+            for (const survey of surveyTypesList) {
+                const { data: responses } = await supabase
+                    .from('responses')
+                    .select('answers')
+                    .eq('user_id', currentUser.id)
+                    .eq('survey_type', survey.key);
+                let satisfied = 0, total = 0;
+                if (responses && responses.length > 0) {
+                    responses.forEach(r => {
+                        let answers = r.answers;
+                        if (!answers) return;
+                        if (typeof answers === 'string') {
+                            try { answers = JSON.parse(answers); } catch (e) { return; }
+                        }
+                        if (typeof answers === 'object') {
+                            Object.values(answers).forEach(val => {
+                                if (val === 'agree' || val === 'strongly_agree') satisfied++;
+                                if (val) total++;
+                            });
+                        }
+                    });
+                }
+                const percent = total > 0 ? ((satisfied / total) * 100).toFixed(1) : 0;
+                const donut = `
+<svg width="44" height="44" viewBox="0 0 36 36">
+  <circle cx="18" cy="18" r="16" fill="#f3f4f6" />
+  <circle cx="18" cy="18" r="16" fill="none" stroke="${survey.color}" stroke-width="4" stroke-dasharray="${percent * 1.005}, 100" stroke-linecap="round" transform="rotate(-90 18 18)" />
+  <text x="18" y="22" text-anchor="middle" font-size="12" fill="${survey.color}" font-weight="bold">${percent}%</text>
+</svg>
+<div class="text-xs text-gray-600 text-center">رضا</div>`;
+                document.getElementById('donut-' + survey.key).innerHTML = donut;
+            }
+        }
             try {
                 // Load parents responses
                 const { count: parentsCount } = await supabase
@@ -973,148 +1132,280 @@
         }
 
         // Generate statistics chart
-        function generateStatisticsChart(responses) {
-            if (!responses || responses.length === 0) return '';
-            
-            // Calculate statistics for each question
-            const questionStats = {};
-            const optionLabels = {
-                'strongly_disagree': 'لا أوافق بشدة',
-                'disagree': 'لا أوافق',
-                'agree': 'أوافق',
-                'strongly_agree': 'أوافق بشدة',
-                'dont_know': 'لا أعرف'
-            };
-            
-            // Initialize stats for all questions
-            questions.forEach((question, index) => {
-                questionStats[`question_${index}`] = {
-                    question: question,
-                    strongly_disagree: 0,
-                    disagree: 0,
-                    agree: 0,
-                    strongly_agree: 0,
-                    dont_know: 0,
-                    total: 0
-                };
-            });
-            
-            // Count responses
-            responses.forEach(response => {
-                Object.keys(response.answers).forEach(questionKey => {
-                    if (questionStats[questionKey]) {
-                        const answer = response.answers[questionKey];
-                        if (answer && questionStats[questionKey][answer] !== undefined) {
-                            questionStats[questionKey][answer]++;
-                            questionStats[questionKey].total++;
-                        }
-                    }
-                });
-            });
-            
-            // Generate overall satisfaction chart
-            let overallStats = {
-                strongly_disagree: 0,
-                disagree: 0,
-                agree: 0,
-                strongly_agree: 0,
-                dont_know: 0
-            };
-            
-            Object.values(questionStats).forEach(stat => {
-                overallStats.strongly_disagree += stat.strongly_disagree;
-                overallStats.disagree += stat.disagree;
-                overallStats.agree += stat.agree;
-                overallStats.strongly_agree += stat.strongly_agree;
-                overallStats.dont_know += stat.dont_know;
-            });
-            
-            const totalResponses = Object.values(overallStats).reduce((a, b) => a + b, 0);
-            
-            let chartHtml = `
-                <div class="bg-white p-6 rounded-xl border border-gray-200 mb-6">
-                    <h4 class="text-lg font-bold text-gray-800 mb-4">الإحصائيات العامة (${responses.length} رد)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h5 class="font-medium text-gray-700 mb-3">توزيع الردود الإجمالي</h5>
-                            <div class="space-y-2">
-            `;
-            
-            Object.keys(overallStats).forEach(key => {
-                const count = overallStats[key];
-                const percentage = totalResponses > 0 ? ((count / totalResponses) * 100).toFixed(1) : 0;
-                const color = getColorForOption(key);
-                
-                chartHtml += `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-4 h-4 rounded ${color} ml-2"></div>
-                            <span class="text-sm">${optionLabels[key]}</span>
+               // Generate statistics chart (fixed)
+// Accepts responses and surveyType (e.g., 'parents','staff','students_1_4','students_5_12','students_vocational' or 'all')
+function generateStatisticsChart(responses, surveyType) {
+    if (!responses || responses.length === 0) return '';
+
+    const optionLabels = {
+        'strongly_disagree': 'لا أوافق بشدة',
+        'disagree': 'لا أوافق',
+        'agree': 'أوافق',
+        'strongly_agree': 'أوافق بشدة',
+        'dont_know': 'لا أعرف'
+    };
+
+    // Determine question keys and question texts depending on surveyType
+    let questionKeys = [];
+    let questionTexts = {}; // map questionKey -> human text (if available)
+
+    // If we have a known surveyType with defined questions, use them
+    if (surveyType && surveyTypes[surveyType] && Array.isArray(surveyTypes[surveyType].questions)) {
+        questionKeys = surveyTypes[surveyType].questions.map((q, i) => `question_${i}`);
+        surveyTypes[surveyType].questions.forEach((q, i) => {
+            questionTexts[`question_${i}`] = q;
+        });
+    } else {
+        // Fallback: collect all distinct answer keys from responses (for 'all' or unknown)
+        const keysSet = new Set();
+        responses.forEach(r => {
+            let answers = r.answers;
+            if (!answers) return;
+            if (typeof answers === 'string') {
+                try { answers = JSON.parse(answers); } catch (e) { return; }
+            }
+            if (typeof answers === 'object') {
+                Object.keys(answers).forEach(k => keysSet.add(k));
+            }
+        });
+        questionKeys = Array.from(keysSet);
+        // questionTexts will default to key name (can be improved later)
+        questionKeys.forEach(k => questionTexts[k] = k);
+    }
+
+    // Initialize stats for each question key
+    const questionStats = {};
+    questionKeys.forEach(key => {
+        questionStats[key] = {
+            question: questionTexts[key] || key,
+            strongly_disagree: 0,
+            disagree: 0,
+            agree: 0,
+            strongly_agree: 0,
+            dont_know: 0,
+            total: 0
+        };
+    });
+
+    // Count responses safely
+    responses.forEach(response => {
+        let answers = response.answers;
+        if (!answers) return;
+        if (typeof answers === 'string') {
+            try { answers = JSON.parse(answers); } catch (e) { return; }
+        }
+        if (typeof answers !== 'object') return;
+
+        Object.keys(answers).forEach(questionKey => {
+            const value = answers[questionKey];
+            if (!questionStats[questionKey]) return;
+            if (!value) return;
+            if (questionStats[questionKey][value] !== undefined) {
+                questionStats[questionKey][value]++;
+                questionStats[questionKey].total++;
+            }
+        });
+    });
+
+    // Aggregate overall stats
+    const overallStats = {
+        strongly_disagree: 0,
+        disagree: 0,
+        agree: 0,
+        strongly_agree: 0,
+        dont_know: 0
+    };
+    Object.values(questionStats).forEach(stat => {
+        overallStats.strongly_disagree += stat.strongly_disagree;
+        overallStats.disagree += stat.disagree;
+        overallStats.agree += stat.agree;
+        overallStats.strongly_agree += stat.strongly_agree;
+        overallStats.dont_know += stat.dont_know;
+    });
+
+    const totalAnswers = Object.values(overallStats).reduce((a, b) => a + b, 0);
+
+    // Build chart HTML
+    // حساب نسبة الرضا الكلية (نسبة أوافق + أوافق بشدة)
+    const satisfiedCount = overallStats.agree + overallStats.strongly_agree;
+    const satisfiedPercentage = totalAnswers > 0 ? ((satisfiedCount / totalAnswers) * 100).toFixed(1) : 0;
+
+    let chartHtml = `
+        <div class="bg-white p-6 rounded-xl border border-gray-200 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-bold text-gray-800">الإحصائيات العامة (${responses.length} رد)</h4>
+                <div class="flex items-center">
+                    <div class="relative w-12 h-12 mr-2">
+                        <svg class="w-12 h-12" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="16" fill="#f3f4f6" />
+                            <circle cx="18" cy="18" r="16" fill="none" stroke="#4ade80" stroke-width="4" stroke-dasharray="${satisfiedPercentage * 1.005}, 100" stroke-linecap="round" transform="rotate(-90 18 18)" />
+                            <text x="18" y="22" text-anchor="middle" font-size="12" fill="#16a34a" font-weight="bold">${satisfiedPercentage}%</text>
+                        </svg>
+                    </div>
+                    <span class="text-xs text-gray-600">نسبة الرضا الكلية</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h5 class="font-medium text-gray-700 mb-3">توزيع الردود الإجمالي</h5>
+                    <div class="space-y-2">
+    `;
+
+    Object.keys(overallStats).forEach(key => {
+        const count = overallStats[key];
+        const percentage = totalAnswers > 0 ? ((count / totalAnswers) * 100).toFixed(1) : 0;
+        const color = getColorForOption(key);
+
+        chartHtml += `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded ${color} ml-2"></div>
+                    <span class="text-sm">${optionLabels[key]}</span>
+                </div>
+                <div class="text-sm font-medium">${count} (${percentage}%)</div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="${color} h-2 rounded-full" style="width: ${percentage}%"></div>
+            </div>
+        `;
+    });
+
+    chartHtml += `
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-medium text-gray-700 mb-3">معلومات إضافية</h5>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>إجمالي الردود:</strong> ${responses.length}</p>
+                        <p><strong>إجمالي الإجابات:</strong> ${totalAnswers}</p>
+                        <p><strong>متوسط الإجابات لكل رد:</strong> ${responses.length ? (totalAnswers / responses.length).toFixed(1) : 0}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // دونات متوسط ملون مقسم لكل سؤال حسب نسبة strongly_disagree
+    const questionEntries = Object.entries(questionStats)
+        .map(([key, stats], idx) => ({
+            key,
+            question: stats.question,
+            stronglyDisagree: stats.strongly_disagree,
+            total: stats.total,
+            color: [
+                '#ef4444', // أحمر
+                '#f59e42', // برتقالي
+                '#fbbf24', // أصفر
+                '#10b981', // أخضر
+                '#3b82f6', // أزرق
+                '#a21caf', // بنفسجي
+                '#ec4899', // وردي
+                '#6366f1', // بنفسجي فاتح
+                '#14b8a6', // فيروزي
+                '#eab308'  // أصفر غامق
+            ][idx % 10]
+        }))
+        .filter(q => q.total > 0);
+
+    if (questionEntries.length > 0) {
+        // حساب النسب
+        const totalStronglyDisagree = questionEntries.reduce((sum, q) => sum + q.stronglyDisagree, 0);
+        let acc = 0;
+        let donutArcs = '';
+        questionEntries.forEach((q, i) => {
+            const percent = totalStronglyDisagree > 0 ? (q.stronglyDisagree / totalStronglyDisagree) : 0;
+            const angle = percent * 360;
+            const largeArc = angle > 180 ? 1 : 0;
+            const startAngle = acc;
+            const endAngle = acc + angle;
+            const r = 16, cx = 18, cy = 18;
+            const start = polarToCartesian(cx, cy, r, startAngle);
+            const end = polarToCartesian(cx, cy, r, endAngle);
+            const d = [
+                `M ${start.x} ${start.y}`,
+                `A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`
+            ].join(' ');
+            if (percent > 0) {
+                // حساب طول القوس
+                const arcLength = (2 * Math.PI * r) * (angle / 360);
+                donutArcs += `<path d="${d}" fill="none" stroke="${q.color}" stroke-width="6" stroke-dasharray="${arcLength},1000">
+                    <animate attributeName="stroke-dasharray" from="0,1000" to="${arcLength},1000" dur="0.8s" begin="${i * 0.15}s" fill="freeze" />
+                </path>`;
+            }
+            acc += angle;
+        });
+        // رسم الدونات
+        chartHtml += `
+        <div class="bg-white p-6 rounded-xl border border-gray-200 mt-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-4">توزيع (غير موافق بشدة) على الأسئلة</h4>
+            <div class="flex flex-col items-center">
+                <svg width="90" height="90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="16" fill="#f3f4f6" />
+                    ${donutArcs}
+                </svg>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4 w-full">
+                    ${questionEntries.map((q, i) => `
+                        <div class="flex items-center gap-2">
+                            <span style="display:inline-block;width:16px;height:16px;background:${q.color};border-radius:50%"></span>
+                            <span class="text-xs text-gray-700">${i + 1}. ${q.question}</span>
+                            <span class="text-xs text-red-600 font-bold">${q.stronglyDisagree}</span>
                         </div>
-                        <div class="text-sm font-medium">${count} (${percentage}%)</div>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="${color} h-2 rounded-full" style="width: ${percentage}%"></div>
-                    </div>
-                `;
-            });
-            
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    // Top 8 أسئلة من حيث عدم الرضا (يبقى كما هو)
+    const sortedQuestions = Object.entries(questionStats)
+        .map(([key, stats]) => ({
+            key,
+            question: stats.question,
+            negativePercentage: stats.total > 0 ? (((stats.strongly_disagree + stats.disagree) / stats.total) * 100) : 0,
+            total: stats.total
+        }))
+        .filter(q => q.total > 0)
+        .sort((a, b) => b.negativePercentage - a.negativePercentage)
+        .slice(0, 8);
+
+    if (sortedQuestions.length > 0) {
+        chartHtml += `
+            <div class="bg-white p-6 rounded-xl border border-gray-200">
+                <h4 class="text-lg font-bold text-gray-800 mb-4">أعلى 8 أسئلة من ناحية عدم الرضا</h4>
+                <div class="space-y-4">
+        `;
+        sortedQuestions.forEach((item, index) => {
             chartHtml += `
-                            </div>
-                        </div>
-                        <div>
-                            <h5 class="font-medium text-gray-700 mb-3">معلومات إضافية</h5>
-                            <div class="space-y-2 text-sm">
-                                <p><strong>إجمالي الردود:</strong> ${responses.length}</p>
-                                <p><strong>إجمالي الإجابات:</strong> ${totalResponses}</p>
-                                <p><strong>متوسط الإجابات لكل رد:</strong> ${(totalResponses / responses.length).toFixed(1)}</p>
-                            </div>
-                        </div>
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-sm font-medium text-gray-700 flex-1 ml-4">${index + 1}. ${item.question}</p>
+                        <span class="text-sm font-bold text-red-600">${item.negativePercentage.toFixed(1)}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="bg-red-500 h-3 rounded-full" style="width: ${item.negativePercentage}%"></div>
                     </div>
                 </div>
             `;
-            
-            // Generate top 5 questions with lowest satisfaction
-            const sortedQuestions = Object.entries(questionStats)
-                .map(([key, stats]) => ({
-                    key,
-                    question: stats.question,
-                    negativePercentage: stats.total > 0 ? (((stats.strongly_disagree + stats.disagree) / stats.total) * 100) : 0,
-                    total: stats.total
-                }))
-                .filter(q => q.total > 0)
-                .sort((a, b) => b.negativePercentage - a.negativePercentage)
-                .slice(0, 5);
-            
-            if (sortedQuestions.length > 0) {
-                chartHtml += `
-                    <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h4 class="text-lg font-bold text-gray-800 mb-4">أعلى 5 أسئلة من ناحية عدم الرضا</h4>
-                        <div class="space-y-4">
-                `;
-                
-                sortedQuestions.forEach((item, index) => {
-                    chartHtml += `
-                        <div>
-                            <div class="flex justify-between items-start mb-2">
-                                <p class="text-sm font-medium text-gray-700 flex-1 ml-4">${index + 1}. ${item.question}</p>
-                                <span class="text-sm font-bold text-red-600">${item.negativePercentage.toFixed(1)}%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="bg-red-500 h-3 rounded-full" style="width: ${item.negativePercentage}%"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                chartHtml += `
-                        </div>
-                    </div>
-                `;
-            }
-            
-            return chartHtml;
-        }
+        });
+        chartHtml += `
+                </div>
+            </div>
+        `;
+    }
+
+    // دالة تحويل الزاوية إلى إحداثيات
+    function polarToCartesian(cx, cy, r, angle) {
+        const rad = (angle - 90) * Math.PI / 180.0;
+        return {
+            x: cx + (r * Math.cos(rad)),
+            y: cy + (r * Math.sin(rad))
+        };
+    }
+
+    return chartHtml;
+}
+
 
         // Get color for option
         function getColorForOption(option) {
