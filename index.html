@@ -7,13 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/amiri.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
@@ -28,6 +26,7 @@
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
         }
+    }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -965,15 +964,28 @@
                     .eq('password', password)
                     .single();
 
+                if (error) {
+                    console.error('خطأ في استعلام Supabase:', error);
+                    showLoginStatus('خطأ في الاتصال بقاعدة البيانات. يرجى المحاولة لاحقاً.', true);
+                    resetLoginButton();
+                    return;
+                }
+
                 // If no exact match, try normalized search
-                if (error || !data) {
+                if (!data) {
                     const normalizedName = normalizeArabicText(teacherName);
-                    
                     const { data: allTeachers, error: searchError } = await supabase
                         .from('teachers')
                         .select('*');
 
-                    if (!searchError && allTeachers) {
+                    if (searchError) {
+                        console.error('خطأ في جلب جميع المعلمين:', searchError);
+                        showLoginStatus('تعذر جلب بيانات المعلمين. يرجى المحاولة لاحقاً.', true);
+                        resetLoginButton();
+                        return;
+                    }
+
+                    if (allTeachers) {
                         data = allTeachers.find(teacher => 
                             normalizeArabicText(cleanInput(teacher.name)) === normalizedName && 
                             teacher.password === password
@@ -982,7 +994,7 @@
                 }
 
                 if (!data) {
-                    showLoginStatus('اسم المعلم أو كلمة المرور غير صحيحة', true);
+                    showLoginStatus('اسم المعلم أو كلمة المرور غير صحيحة أو غير موجودة في النظام.', true);
                     resetLoginButton();
                     return;
                 }
@@ -990,15 +1002,13 @@
                 currentTeacher = data;
                 localStorage.setItem('currentTeacher', JSON.stringify(currentTeacher));
                 showLoginStatus('تم تسجيل الدخول بنجاح! جاري التحويل...', false);
-                
                 setTimeout(() => {
                     showTeacherPanel();
                     resetLoginButton();
                 }, 1500);
-                
             } catch (err) {
-                console.error('خطأ في تسجيل الدخول:', err);
-                showLoginStatus('حدث خطأ في تسجيل الدخول، يرجى المحاولة مرة أخرى', true);
+                console.error('خطأ غير متوقع في تسجيل الدخول:', err);
+                showLoginStatus('حدث خطأ غير متوقع في تسجيل الدخول. يرجى المحاولة لاحقاً.', true);
                 resetLoginButton();
             }
         }
@@ -1127,56 +1137,6 @@
             showLoginPanel();
         }
 
-        function showCreateSurveySection() {
-            document.getElementById('createSurveySection').classList.remove('hidden');
-            document.querySelector('#teacherPanel > div:first-child').classList.add('hidden');
-            // تعبئة اسم المدرسة تلقائياً من بيانات المعلم
-            if (currentTeacher && currentTeacher.school_name) {
-                document.getElementById('schoolName').value = currentTeacher.school_name;
-            }
-        }
-
-        function showMySurveysSection() {
-            document.getElementById('createSurveySection').classList.add('hidden');
-            document.querySelector('#teacherPanel > div:first-child').classList.remove('hidden');
-            loadTeacherSurveys();
-        }
-
-        function showStudentPanel() {
-            hideAllPanels();
-            studentPanel.classList.remove('hidden');
-            
-            // Check if there's a survey to display
-            if (currentSurvey) {
-                displaySurveyForStudent();
-            }
-        }
-
-        async function loadTeacherSurveys() {
-            if (!currentTeacher) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('surveys')
-                    .select('*')
-                    .eq('teacher_id', currentTeacher.id)
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    console.error('خطأ في تحميل الاستبانات:', error);
-                    return;
-                }
-
-                teacherSurveys = data || [];
-                displayTeacherSurveys();
-                
-            } catch (err) {
-                console.error('خطأ غير متوقع:', err);
-            }
-        }
-
-        function displayTeacherSurveys() {
-            const container = document.getElementById('mySurveysContainer');
             
             if (teacherSurveys.length === 0) {
                 container.innerHTML = `
@@ -1248,7 +1208,7 @@ window.deleteSurvey = async function(surveyId) {
 }
 
             container.innerHTML = surveysHtml;
-        }
+        
 
         function copySurveyLink(link) {
             navigator.clipboard.writeText(link).then(() => {
@@ -1511,6 +1471,8 @@ window.deleteSurvey = async function(surveyId) {
             // إظهار الاستبانة
             surveyNotFound.classList.add('hidden');
             surveyContent.classList.remove('hidden');
+            document.getElementById('studentResponseForm').classList.remove('hidden');
+            document.getElementById('thankYouMessage').classList.add('hidden');
 
             // عرض رأس الاستبانة
             surveyHeader.innerHTML = `
@@ -1525,6 +1487,7 @@ window.deleteSurvey = async function(surveyId) {
             studentQuestionsContainer.innerHTML = '';
             if (!currentSurvey.questions || currentSurvey.questions.length === 0) {
                 studentQuestionsContainer.innerHTML = '<div class="text-center text-red-600 p-6">لا توجد أسئلة في هذه الاستبانة.</div>';
+                document.getElementById('studentResponseForm').classList.add('hidden');
                 return;
             }
             currentSurvey.questions.forEach((question, index) => {
