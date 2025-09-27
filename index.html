@@ -1449,23 +1449,24 @@ window.deleteSurvey = async function(surveyId) {
                 // Generate survey link
                 const surveyLink = `${window.location.origin}${window.location.pathname}?survey=${surveyId}`;
                 document.getElementById('surveyLink').value = surveyLink;
-                
+
                 // Show success message
                 surveyLinkSection.classList.remove('hidden');
                 statisticsSection.classList.remove('hidden');
-                
+
                 // Load existing responses
                 await loadSurveyResponses(surveyId);
-                
+
                 // Initialize statistics
                 updateStatistics();
-                
-                // Reload teacher surveys
+
+                // Reload teacher surveys and display immediately
                 await loadTeacherSurveys();
-                
+                displayTeacherSurveys();
+
                 // Go back to surveys list
                 showMySurveysSection();
-                
+
                 alert('تم إنشاء الاستبانة بنجاح وحفظها في السحابة! يمكنك الآن:\n1. نسخ الرابط ومشاركته مع الطلبة\n2. مشاهدة الإحصائيات من قائمة الاستبانات\n3. تتبع الردود في الوقت الفعلي');
 
             } catch (err) {
