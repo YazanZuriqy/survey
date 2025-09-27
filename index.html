@@ -2020,12 +2020,12 @@ window.deleteSurvey = async function(surveyId) {
                     .select('*')
                     .eq('id', surveyId)
                     .single();
-
+                // طباعة النتيجة في سجل المتصفح
+                console.log('نتيجة جلب الاستبانة من Supabase:', { data, error, surveyId });
                 if (error) {
                     console.error('خطأ في تحميل الاستبانة:', error);
                     return null;
                 }
-
                 return data;
             } catch (err) {
                 console.error('خطأ غير متوقع في تحميل الاستبانة:', err);
@@ -2069,14 +2069,10 @@ window.deleteSurvey = async function(surveyId) {
         window.addEventListener('load', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const surveyId = urlParams.get('survey');
-            
             if (surveyId) {
-                // Hide header for student view
                 document.querySelector('header').classList.add('hidden');
-                
                 // Load survey from Supabase
                 const surveyData = await loadSurvey(surveyId);
-                
                 if (surveyData) {
                     currentSurvey = {
                         id: surveyData.id,
@@ -2086,14 +2082,18 @@ window.deleteSurvey = async function(surveyId) {
                         questions: surveyData.questions,
                         createdAt: new Date(surveyData.created_at).toLocaleString('ar-SA')
                     };
-                    
                     showStudentPanel();
+                    displaySurveyForStudent();
                 } else {
-                    // Survey not found
                     showStudentPanel();
+                    document.getElementById('surveyNotFound').classList.remove('hidden');
+                    document.getElementById('surveyContent').classList.add('hidden');
+                    // إضافة رسالة خطأ واضحة
+                    document.getElementById('surveyNotFound').innerHTML += '<div class="mt-4 text-red-600">⚠️ لم يتم العثور على الاستبانة المطلوبة. تأكد من صحة الرابط أو أن المعلم أنشأ الاستبانة فعلاً.</div>';
+                    // تسجيل الخطأ في سجل المتصفح
+                    console.error('لم يتم العثور على الاستبانة في قاعدة البيانات. surveyId:', surveyId);
                 }
             } else {
-                // Check if teacher is logged in
                 const savedTeacher = localStorage.getItem('currentTeacher');
                 if (savedTeacher) {
                     currentTeacher = JSON.parse(savedTeacher);
