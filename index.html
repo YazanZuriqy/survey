@@ -1225,8 +1225,8 @@
                     </div>
                 `;
             });
-// حذف الاستبانة من قاعدة البيانات
-async function deleteSurvey(surveyId) {
+// حذف الاستبانة من قاعدة البيانات (متاح في النطاق العام)
+window.deleteSurvey = async function(surveyId) {
     if (!confirm('هل أنت متأكد أنك تريد حذف هذه الاستبانة؟ سيتم حذف جميع الردود المرتبطة بها أيضاً.')) return;
     try {
         // حذف الردود المرتبطة أولاً
