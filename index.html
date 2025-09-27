@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/amiri.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             box-sizing: border-box;
@@ -29,6 +31,14 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Modal for Statistics Report -->
+    <div id="statsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-3xl w-full relative">
+            <button id="closeStatsModal" class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded">إغلاق</button>
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">📈 التقرير الإحصائي الكامل</h2>
+            <div id="statsModalContent"></div>
+        </div>
+    </div>
     <!-- Header -->
     <header class="bg-white shadow-lg border-b-4 border-blue-500">
         <div class="container mx-auto px-6 py-4">
@@ -36,7 +46,7 @@
                 <h1 class="text-3xl font-bold text-blue-800 flex items-center">
                     📋 نظام الاستبانات المدرسية
                 </h1>
-                <div class="flex space-x-4 space-x-reverse">
+                <div id="headerButtons" class="flex space-x-4 space-x-reverse">
                     <button id="teacherBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
                         👨‍🏫 المعلم
                     </button>
@@ -44,21 +54,293 @@
                         👨‍🎓 الطالب
                     </button>
                 </div>
+                <div id="userInfo" class="hidden flex items-center space-x-4 space-x-reverse">
+                    <span id="welcomeText" class="text-gray-700 font-medium"></span>
+                    <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                        🚪 تسجيل الخروج
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- Login Panel -->
+    <div id="loginPanel" class="min-h-screen flex items-center justify-center px-6 py-8 fade-in">
+        <div class="max-w-md w-full">
+            <!-- Login Card -->
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Header with gradient -->
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-12 text-center">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <span class="text-4xl">👨‍🏫</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">مرحباً بك</h2>
+                    <p class="text-blue-100">سجل دخولك لإدارة الاستبانات</p>
+                </div>
+                
+                <!-- Form -->
+                <div class="px-8 py-8">
+                    <form id="loginForm" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="block text-gray-700 font-semibold text-sm">اسم المعلم</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-lg">👤</span>
+                                </div>
+                                <input type="text" id="teacherName" class="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200 text-right" placeholder="أدخل اسمك الكامل" required>
+                            </div>
+                            <div id="teacherNameHelper" class="text-xs text-gray-500 hidden">
+                                💡 سيتم تجاهل المسافات الزائدة تلقائياً
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-gray-700 font-semibold text-sm">كلمة المرور</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-lg">🔒</span>
+                                </div>
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                                    <button type="button" id="togglePassword" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                                        <span id="eyeIcon">👁️</span>
+                                    </button>
+                                </div>
+                                <input type="password" id="teacherPassword" class="w-full pr-12 pl-12 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200" placeholder="أدخل كلمة المرور" required>
+                            </div>
+                            <div id="passwordStrength" class="text-xs hidden">
+                                <div class="flex items-center space-x-1 space-x-reverse">
+                                    <div class="flex space-x-1 space-x-reverse">
+                                        <div id="strength1" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                        <div id="strength2" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                        <div id="strength3" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                        <div id="strength4" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                    </div>
+                                    <span id="strengthText" class="text-gray-500">قوة كلمة المرور</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Login Status -->
+                        <div id="loginStatus" class="hidden p-3 rounded-lg text-sm text-center">
+                            <div id="loginMessage"></div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <button type="submit" id="loginSubmitBtn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <span id="loginBtnText">🚀 تسجيل الدخول</span>
+                                <div id="loginSpinner" class="hidden inline-flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    جاري التحقق...
+                                </div>
+                            </button>
+                            
+                            <div class="text-center">
+                                <button type="button" id="registerBtn" class="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200 flex items-center justify-center mx-auto space-x-2 space-x-reverse">
+                                    <span>📝</span>
+                                    <span>إنشاء حساب جديد</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Footer -->
+                <div class="bg-gray-50 px-8 py-4 text-center">
+                    <p class="text-xs text-gray-500">
+                        🔒 بياناتك محمية ومشفرة بأعلى معايير الأمان
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Quick Tips -->
+            <div class="mt-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
+                <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
+                    <span class="ml-2">💡</span>
+                    نصائح سريعة
+                </h3>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• سيتم تنظيف المسافات الزائدة تلقائياً</li>
+                    <li>• يمكنك إظهار/إخفاء كلمة المرور</li>
+                    <li>• تسجيل الدخول آمن ومحمي</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Panel -->
+    <div id="registerPanel" class="min-h-screen flex items-center justify-center px-6 py-8 fade-in hidden">
+        <div class="max-w-md w-full">
+            <!-- Register Card -->
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Header with gradient -->
+                <div class="bg-gradient-to-r from-green-600 to-blue-600 px-8 py-12 text-center">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <span class="text-4xl">📝</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">انضم إلينا</h2>
+                    <p class="text-green-100">أنشئ حسابك الجديد وابدأ رحلتك</p>
+                </div>
+                
+                <!-- Form -->
+                <div class="px-8 py-8">
+                    <form id="registerForm" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="block text-gray-700 font-semibold text-sm">اسم المعلم</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-lg">👤</span>
+                                </div>
+                                <input type="text" id="newTeacherName" class="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all duration-200 text-right" placeholder="أدخل اسمك الكامل" required>
+                            </div>
+                            <div id="newTeacherNameHelper" class="text-xs text-gray-500 hidden">
+                                💡 سيتم تنظيف المسافات تلقائياً
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-gray-700 font-semibold text-sm">اسم المدرسة</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-lg">🏫</span>
+                                </div>
+                                <input type="text" id="newSchoolName" class="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all duration-200 text-right" placeholder="أدخل اسم المدرسة" required>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-gray-700 font-semibold text-sm">كلمة المرور</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-lg">🔒</span>
+                                </div>
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                                    <button type="button" id="toggleNewPassword" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                                        <span id="newEyeIcon">👁️</span>
+                                    </button>
+                                </div>
+                                <input type="password" id="newTeacherPassword" class="w-full pr-12 pl-12 py-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all duration-200" placeholder="أدخل كلمة المرور" required>
+                            </div>
+                            <div id="newPasswordStrength" class="text-xs">
+                                <div class="flex items-center space-x-1 space-x-reverse">
+                                    <div class="flex space-x-1 space-x-reverse">
+                                        <div id="newStrength1" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                        <div id="newStrength2" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                        <div id="newStrength3" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                        <div id="newStrength4" class="w-2 h-2 rounded-full bg-gray-200"></div>
+                                    </div>
+                                    <span id="newStrengthText" class="text-gray-500">قوة كلمة المرور</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-gray-700 font-semibold text-sm">تأكيد كلمة المرور</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-lg">🔐</span>
+                                </div>
+                                <input type="password" id="confirmPassword" class="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all duration-200" placeholder="أعد إدخال كلمة المرور" required>
+                            </div>
+                            <div id="passwordMatch" class="text-xs hidden">
+                                <span id="matchText" class="text-gray-500">تطابق كلمات المرور</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Register Status -->
+                        <div id="registerStatus" class="hidden p-3 rounded-lg text-sm text-center">
+                            <div id="registerMessage"></div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <button type="submit" id="registerSubmitBtn" class="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <span id="registerBtnText">✅ إنشاء الحساب</span>
+                                <div id="registerSpinner" class="hidden inline-flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    جاري الإنشاء...
+                                </div>
+                            </button>
+                            
+                            <div class="text-center">
+                                <button type="button" id="backToLoginBtn" class="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200 flex items-center justify-center mx-auto space-x-2 space-x-reverse">
+                                    <span>🔙</span>
+                                    <span>العودة لتسجيل الدخول</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Footer -->
+                <div class="bg-gray-50 px-8 py-4 text-center">
+                    <p class="text-xs text-gray-500">
+                        🔒 جميع البيانات محمية ومشفرة
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Password Requirements -->
+            <div class="mt-6 bg-green-50 rounded-xl p-4 border border-green-200">
+                <h3 class="font-semibold text-green-800 mb-2 flex items-center">
+                    <span class="ml-2">🛡️</span>
+                    متطلبات كلمة المرور
+                </h3>
+                <ul class="text-sm text-green-700 space-y-1">
+                    <li id="req-length" class="flex items-center">
+                        <span class="ml-2">⭕</span>
+                        <span>على الأقل 6 أحرف</span>
+                    </li>
+                    <li id="req-number" class="flex items-center">
+                        <span class="ml-2">⭕</span>
+                        <span>يحتوي على رقم واحد على الأقل</span>
+                    </li>
+                    <li id="req-letter" class="flex items-center">
+                        <span class="ml-2">⭕</span>
+                        <span>يحتوي على حرف واحد على الأقل</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <!-- Teacher Panel -->
-    <div id="teacherPanel" class="container mx-auto px-6 py-8 fade-in">
+    <div id="teacherPanel" class="container mx-auto px-6 py-8 fade-in hidden">
+        <!-- My Surveys Section -->
         <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                🏫 إنشاء استبانة جديدة
-            </h2>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    📊 استباناتي
+                </h2>
+                <button id="createNewSurveyBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                    ➕ إنشاء استبانة جديدة
+                </button>
+            </div>
+            
+            <div id="mySurveysContainer" class="space-y-4">
+                <!-- Surveys will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Create Survey Section -->
+        <div id="createSurveySection" class="bg-white rounded-xl shadow-xl p-8 mb-8 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    🏫 إنشاء استبانة جديدة
+                </h2>
+                <button id="backToSurveysBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                    🔙 العودة
+                </button>
+            </div>
             
             <form id="surveyForm" class="space-y-6">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">اسم المدرسة</label>
-                    <input type="text" id="schoolName" class="w-full p-4 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="أدخل اسم المدرسة" required>
+                    <input type="text" id="schoolName" class="w-full p-4 border-2 border-gray-300 rounded-lg bg-gray-100" placeholder="اسم المدرسة" required readonly>
                 </div>
                 
                 <div>
@@ -153,8 +435,35 @@
             <div class="mt-8 p-6 bg-gray-50 rounded-lg">
                 <h4 class="font-semibold text-gray-800 mb-4">📤 تصدير البيانات</h4>
                 <div class="flex space-x-4 space-x-reverse">
-                    <button id="exportPDFBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-                        📄 تصدير PDF
+                    <button id="exportExcelBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                        📊 تصدير Excel
+                    </button>
+                    <button id="showStatsModalBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                        � عرض التقرير الإحصائي
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responses Section -->
+        <div id="responsesSection" class="bg-white rounded-xl shadow-xl p-8 mt-8 hidden">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">📝 ردود الطلبة التفصيلية</h3>
+            <div id="responsesContainer">
+                <!-- Responses will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Panel -->
+    <div id="studentPanel" class="container mx-auto px-6 py-8 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                📝 الإجابة على الاستبانة
+            </h2>
+
+            <div id="surveyNotFound" class="text-center py-12">
+
+
                     </button>
                     <button id="exportExcelBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
                         📊 تصدير Excel
@@ -220,6 +529,95 @@
     </div>
 
     <script>
+        // Modal logic
+        document.getElementById('showStatsModalBtn').addEventListener('click', showStatsModal);
+        document.getElementById('closeStatsModal').addEventListener('click', function() {
+            document.getElementById('statsModal').classList.add('hidden');
+        });
+
+        function showStatsModal() {
+            const modal = document.getElementById('statsModal');
+            const content = document.getElementById('statsModalContent');
+            if (!currentSurvey || surveyResponses.length === 0) {
+                content.innerHTML = '<p class="text-red-600">لا توجد بيانات إحصائية متاحة.</p>';
+                modal.classList.remove('hidden');
+                return;
+            }
+            let html = `<h3 class='text-xl font-bold mb-2'>${currentSurvey.title}</h3>`;
+            html += `<p class='mb-2'>المدرسة: ${currentSurvey.schoolName}</p>`;
+            html += `<p class='mb-2'>عدد الأسئلة: ${currentSurvey.questions.length}</p>`;
+            html += `<p class='mb-2'>عدد الردود: ${surveyResponses.length}</p>`;
+            html += `<hr class='my-4'>`;
+            // Table of responses
+            html += `<table class='w-full mb-4 border'><thead><tr><th>اسم الطالب</th><th>تاريخ الإرسال</th>`;
+            currentSurvey.questions.forEach((q, i) => {
+                html += `<th>س${i+1}</th>`;
+            });
+            html += `</tr></thead><tbody>`;
+            surveyResponses.forEach(resp => {
+                html += `<tr><td>${resp.studentName}</td><td>${resp.submittedAt}</td>`;
+                currentSurvey.questions.forEach(q => {
+                    const r = resp.responses[q.id];
+                    html += `<td>${r ? r.selectedText : 'لم يجب'}</td>`;
+                });
+                html += `</tr>`;
+            });
+            html += `</tbody></table>`;
+            // Statistics for each question
+            currentSurvey.questions.forEach((question, idx) => {
+                html += `<div class='mb-6'><h4 class='font-semibold mb-2'>السؤال ${idx+1}: ${question.text}</h4>`;
+                const optionCounts = new Array(question.options.length).fill(0);
+                surveyResponses.forEach(response => {
+                    const qr = response.responses[question.id];
+                    if (qr) optionCounts[qr.selectedOption]++;
+                });
+                html += `<table class='w-full mb-2 border'><thead><tr><th>الخيار</th><th>عدد الإجابات</th><th>النسبة</th></tr></thead><tbody>`;
+                const total = surveyResponses.length;
+                question.options.forEach((opt, i) => {
+                    const count = optionCounts[i];
+                    const percent = total > 0 ? ((count/total)*100).toFixed(1) : 0;
+                    html += `<tr><td>${opt}</td><td>${count}</td><td>${percent}%</td></tr>`;
+                });
+                html += `</tbody></table>`;
+                // Pie chart
+                const chartId = `modalChart${idx}`;
+                html += `<canvas id='${chartId}' width='300' height='300'></canvas></div>`;
+            });
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+            // Draw charts
+            setTimeout(() => {
+                currentSurvey.questions.forEach((question, idx) => {
+                    const chartId = `modalChart${idx}`;
+                    const optionCounts = new Array(question.options.length).fill(0);
+                    surveyResponses.forEach(response => {
+                        const qr = response.responses[question.id];
+                        if (qr) optionCounts[qr.selectedOption]++;
+                    });
+                    const ctx = document.getElementById(chartId);
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: question.options,
+                                datasets: [{
+                                    data: optionCounts,
+                                    backgroundColor: [
+                                        '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
+                                        '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: { position: 'bottom' }
+                                }
+                            }
+                        });
+                    }
+                });
+            }, 200);
+        }
         // Supabase Configuration
         const supabaseUrl = 'https://onqxpytkysifjbnuqzra.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ucXhweXRreXNpZmpibnVxenJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MjE1NjAsImV4cCI6MjA3NDQ5NzU2MH0.8qpnTsI59j0oe7NfmMBFx1XdGWT10XHJCNN0mBPMYFs';
@@ -230,6 +628,8 @@
         let surveyResponses = [];
         let questionCounter = 0;
         let charts = {}; // Store chart instances
+        let currentTeacher = null;
+        let teacherSurveys = [];
 
         // DOM elements
         const teacherBtn = document.getElementById('teacherBtn');
@@ -244,7 +644,7 @@
         const statisticsSection = document.getElementById('statisticsSection');
 
         // Event listeners
-        teacherBtn.addEventListener('click', showTeacherPanel);
+        teacherBtn.addEventListener('click', showLoginPanel);
         studentBtn.addEventListener('click', showStudentPanel);
         addQuestionBtn.addEventListener('click', addQuestion);
         generateSurveyBtn.addEventListener('click', generateSurvey);
@@ -252,27 +652,641 @@
         document.getElementById('studentResponseForm').addEventListener('submit', submitResponse);
         document.getElementById('showStatsBtn').addEventListener('click', showStatistics);
         document.getElementById('showResponsesBtn').addEventListener('click', showDetailedResponses);
-        document.getElementById('exportPDFBtn').addEventListener('click', exportToPDF);
+    // document.getElementById('exportPDFBtn').addEventListener('click', exportToPDF); // تم تعطيله لتجنب التعارض
         document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
         document.getElementById('exportImageBtn').addEventListener('click', exportChartsAsImages);
+        
+        // Login/Register event listeners
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        document.getElementById('registerForm').addEventListener('submit', handleRegister);
+        document.getElementById('registerBtn').addEventListener('click', showRegisterPanel);
+        document.getElementById('backToLoginBtn').addEventListener('click', showLoginPanel);
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('createNewSurveyBtn').addEventListener('click', showCreateSurveySection);
+        document.getElementById('backToSurveysBtn').addEventListener('click', showMySurveysSection);
+
+        // Smart input event listeners
+        document.getElementById('teacherName').addEventListener('input', function(e) {
+            const helper = document.getElementById('teacherNameHelper');
+            if (e.target.value.includes('  ') || e.target.value.startsWith(' ') || e.target.value.endsWith(' ')) {
+                helper.classList.remove('hidden');
+            } else {
+                helper.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('newTeacherName').addEventListener('input', function(e) {
+            const helper = document.getElementById('newTeacherNameHelper');
+            if (e.target.value.includes('  ') || e.target.value.startsWith(' ') || e.target.value.endsWith(' ')) {
+                helper.classList.remove('hidden');
+            } else {
+                helper.classList.add('hidden');
+            }
+        });
+
+        // Password visibility toggles
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('teacherPassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '👁️';
+            }
+        });
+
+        document.getElementById('toggleNewPassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('newTeacherPassword');
+            const eyeIcon = document.getElementById('newEyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '👁️';
+            }
+        });
+
+        // Password strength checking
+        document.getElementById('teacherPassword').addEventListener('input', function(e) {
+            const strengthDiv = document.getElementById('passwordStrength');
+            if (e.target.value.length > 0) {
+                strengthDiv.classList.remove('hidden');
+                checkPasswordStrength(e.target.value, false);
+            } else {
+                strengthDiv.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('newTeacherPassword').addEventListener('input', function(e) {
+            checkPasswordStrength(e.target.value, true);
+            checkPasswordMatch();
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('newTeacherPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchDiv = document.getElementById('passwordMatch');
+            const matchText = document.getElementById('matchText');
+            
+            if (confirmPassword.length > 0) {
+                matchDiv.classList.remove('hidden');
+                if (password === confirmPassword) {
+                    matchText.textContent = '✅ كلمات المرور متطابقة';
+                    matchText.className = 'text-green-600';
+                } else {
+                    matchText.textContent = '❌ كلمات المرور غير متطابقة';
+                    matchText.className = 'text-red-600';
+                }
+            } else {
+                matchDiv.classList.add('hidden');
+            }
+        }
+
+        // Smart Input Processing Functions
+        function cleanInput(input) {
+            return input.trim().replace(/\s+/g, ' ');
+        }
+
+        function normalizeArabicText(text) {
+            // Normalize Arabic characters
+            return text
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/[ة]/g, 'ه')
+                .replace(/[ى]/g, 'ي')
+                .replace(/[ؤ]/g, 'و')
+                .replace(/[ئ]/g, 'ي');
+        }
+
+        function checkPasswordStrength(password, isNew = false) {
+            const prefix = isNew ? 'new' : '';
+            const strength = {
+                score: 0,
+                feedback: []
+            };
+
+            // Length check
+            if (password.length >= 6) {
+                strength.score += 25;
+                updateRequirement(`${prefix}req-length`, true);
+            } else {
+                updateRequirement(`${prefix}req-length`, false);
+                strength.feedback.push('كلمة المرور قصيرة جداً');
+            }
+
+            // Number check
+            if (/\d/.test(password)) {
+                strength.score += 25;
+                updateRequirement(`${prefix}req-number`, true);
+            } else {
+                updateRequirement(`${prefix}req-number`, false);
+                strength.feedback.push('أضف رقماً واحداً على الأقل');
+            }
+
+            // Letter check
+            if (/[a-zA-Zا-ي]/.test(password)) {
+                strength.score += 25;
+                updateRequirement(`${prefix}req-letter`, true);
+            } else {
+                updateRequirement(`${prefix}req-letter`, false);
+                strength.feedback.push('أضف حرفاً واحداً على الأقل');
+            }
+
+            // Special character bonus
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                strength.score += 25;
+            }
+
+            updatePasswordStrengthUI(strength.score, isNew);
+            return strength;
+        }
+
+        function updateRequirement(reqId, met) {
+            const element = document.getElementById(reqId);
+            if (element) {
+                const icon = element.querySelector('span:first-child');
+                if (met) {
+                    icon.textContent = '✅';
+                    element.classList.add('text-green-600');
+                    element.classList.remove('text-green-700');
+                } else {
+                    icon.textContent = '⭕';
+                    element.classList.remove('text-green-600');
+                    element.classList.add('text-green-700');
+                }
+            }
+        }
+
+        function updatePasswordStrengthUI(score, isNew = false) {
+            const prefix = isNew ? 'new' : '';
+            const strengthElements = [
+                document.getElementById(`${prefix}Strength1`),
+                document.getElementById(`${prefix}Strength2`),
+                document.getElementById(`${prefix}Strength3`),
+                document.getElementById(`${prefix}Strength4`)
+            ];
+            const strengthText = document.getElementById(`${prefix}StrengthText`);
+
+            // Reset all
+            strengthElements.forEach(el => {
+                if (el) {
+                    el.className = 'w-2 h-2 rounded-full bg-gray-200';
+                }
+            });
+
+            let text = 'ضعيفة جداً';
+            let colorClass = 'bg-red-500';
+
+            if (score >= 25) {
+                strengthElements[0] && (strengthElements[0].className = `w-2 h-2 rounded-full ${colorClass}`);
+                text = 'ضعيفة';
+            }
+            if (score >= 50) {
+                strengthElements[1] && (strengthElements[1].className = `w-2 h-2 rounded-full bg-orange-500`);
+                text = 'متوسطة';
+                colorClass = 'bg-orange-500';
+            }
+            if (score >= 75) {
+                strengthElements[2] && (strengthElements[2].className = `w-2 h-2 rounded-full bg-yellow-500`);
+                text = 'جيدة';
+                colorClass = 'bg-yellow-500';
+            }
+            if (score >= 100) {
+                strengthElements[3] && (strengthElements[3].className = `w-2 h-2 rounded-full bg-green-500`);
+                text = 'قوية جداً';
+                colorClass = 'bg-green-500';
+            }
+
+            if (strengthText) {
+                strengthText.textContent = text;
+                strengthText.className = `text-gray-600`;
+            }
+        }
+
+        function showLoginStatus(message, isError = false) {
+            const status = document.getElementById('loginStatus');
+            const messageEl = document.getElementById('loginMessage');
+            
+            status.classList.remove('hidden');
+            messageEl.textContent = message;
+            
+            if (isError) {
+                status.className = 'p-3 rounded-lg text-sm text-center bg-red-50 border border-red-200';
+                messageEl.className = 'text-red-700';
+            } else {
+                status.className = 'p-3 rounded-lg text-sm text-center bg-green-50 border border-green-200';
+                messageEl.className = 'text-green-700';
+            }
+        }
+
+        function showRegisterStatus(message, isError = false) {
+            const status = document.getElementById('registerStatus');
+            const messageEl = document.getElementById('registerMessage');
+            
+            status.classList.remove('hidden');
+            messageEl.textContent = message;
+            
+            if (isError) {
+                status.className = 'p-3 rounded-lg text-sm text-center bg-red-50 border border-red-200';
+                messageEl.className = 'text-red-700';
+            } else {
+                status.className = 'p-3 rounded-lg text-sm text-center bg-green-50 border border-green-200';
+                messageEl.className = 'text-green-700';
+            }
+        }
+
+        // Authentication Functions
+        function showLoginPanel() {
+            hideAllPanels();
+            document.getElementById('loginPanel').classList.remove('hidden');
+        }
+
+        function showRegisterPanel() {
+            hideAllPanels();
+            document.getElementById('registerPanel').classList.remove('hidden');
+        }
 
         function showTeacherPanel() {
+            if (!currentTeacher) {
+                showLoginPanel();
+                return;
+            }
+            hideAllPanels();
             teacherPanel.classList.remove('hidden');
+            document.getElementById('headerButtons').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('welcomeText').textContent = `مرحباً ${currentTeacher.name}`;
+            loadTeacherSurveys();
+        }
+
+        function hideAllPanels() {
+            document.getElementById('loginPanel').classList.add('hidden');
+            document.getElementById('registerPanel').classList.add('hidden');
+            teacherPanel.classList.add('hidden');
             studentPanel.classList.add('hidden');
-            teacherBtn.classList.add('bg-blue-700');
-            studentBtn.classList.remove('bg-green-700');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const btnText = document.getElementById('loginBtnText');
+            const spinner = document.getElementById('loginSpinner');
+            
+            submitBtn.disabled = true;
+            btnText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            
+            // Clean and normalize inputs
+            const rawTeacherName = document.getElementById('teacherName').value;
+            const teacherName = cleanInput(rawTeacherName);
+            const password = document.getElementById('teacherPassword').value.trim();
+            
+            if (!teacherName || !password) {
+                showLoginStatus('يرجى ملء جميع الحقول', true);
+                resetLoginButton();
+                return;
+            }
+            
+            try {
+                // Try exact match first
+                let { data, error } = await supabase
+                    .from('teachers')
+                    .select('*')
+                    .eq('name', teacherName)
+                    .eq('password', password)
+                    .single();
+
+                // If no exact match, try normalized search
+                if (error || !data) {
+                    const normalizedName = normalizeArabicText(teacherName);
+                    
+                    const { data: allTeachers, error: searchError } = await supabase
+                        .from('teachers')
+                        .select('*');
+
+                    if (!searchError && allTeachers) {
+                        data = allTeachers.find(teacher => 
+                            normalizeArabicText(cleanInput(teacher.name)) === normalizedName && 
+                            teacher.password === password
+                        );
+                    }
+                }
+
+                if (!data) {
+                    showLoginStatus('اسم المعلم أو كلمة المرور غير صحيحة', true);
+                    resetLoginButton();
+                    return;
+                }
+
+                currentTeacher = data;
+                localStorage.setItem('currentTeacher', JSON.stringify(currentTeacher));
+                showLoginStatus('تم تسجيل الدخول بنجاح! جاري التحويل...', false);
+                
+                setTimeout(() => {
+                    showTeacherPanel();
+                    resetLoginButton();
+                }, 1500);
+                
+            } catch (err) {
+                console.error('خطأ في تسجيل الدخول:', err);
+                showLoginStatus('حدث خطأ في تسجيل الدخول، يرجى المحاولة مرة أخرى', true);
+                resetLoginButton();
+            }
+        }
+
+        function resetLoginButton() {
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const btnText = document.getElementById('loginBtnText');
+            const spinner = document.getElementById('loginSpinner');
+            
+            submitBtn.disabled = false;
+            btnText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('registerSubmitBtn');
+            const btnText = document.getElementById('registerBtnText');
+            const spinner = document.getElementById('registerSpinner');
+            
+            submitBtn.disabled = true;
+            btnText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            
+            // Clean and validate inputs
+            const rawTeacherName = document.getElementById('newTeacherName').value;
+            const teacherName = cleanInput(rawTeacherName);
+            const rawSchoolName = document.getElementById('newSchoolName').value;
+            const schoolName = cleanInput(rawSchoolName);
+            const password = document.getElementById('newTeacherPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            
+            // Validation
+            if (!teacherName || !schoolName || !password || !confirmPassword) {
+                showRegisterStatus('يرجى ملء جميع الحقول', true);
+                resetRegisterButton();
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showRegisterStatus('كلمة المرور غير متطابقة', true);
+                resetRegisterButton();
+                return;
+            }
+            
+            const strength = checkPasswordStrength(password, true);
+            if (strength.score < 50) {
+                showRegisterStatus('كلمة المرور ضعيفة جداً، يرجى تحسينها', true);
+                resetRegisterButton();
+                return;
+            }
+            
+            try {
+                // Check if teacher already exists (with normalization)
+                const normalizedName = normalizeArabicText(teacherName);
+                
+                const { data: allTeachers, error: searchError } = await supabase
+                    .from('teachers')
+                    .select('name');
+
+                if (!searchError && allTeachers) {
+                    const existingTeacher = allTeachers.find(teacher => 
+                        normalizeArabicText(cleanInput(teacher.name)) === normalizedName
+                    );
+                    
+                    if (existingTeacher) {
+                        showRegisterStatus('اسم المعلم موجود بالفعل، يرجى اختيار اسم آخر', true);
+                        resetRegisterButton();
+                        return;
+                    }
+                }
+
+                // Create new teacher
+                const { data, error } = await supabase
+                    .from('teachers')
+                    .insert([{
+                        name: teacherName,
+                        school_name: schoolName,
+                        password: password,
+                        created_at: new Date().toISOString()
+                    }])
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('خطأ في إنشاء الحساب:', error);
+                    showRegisterStatus('حدث خطأ في إنشاء الحساب، يرجى المحاولة مرة أخرى', true);
+                    resetRegisterButton();
+                    return;
+                }
+
+                currentTeacher = data;
+                localStorage.setItem('currentTeacher', JSON.stringify(currentTeacher));
+                showRegisterStatus('تم إنشاء الحساب بنجاح! جاري التحويل...', false);
+                
+                setTimeout(() => {
+                    showTeacherPanel();
+                    resetRegisterButton();
+                }, 1500);
+                
+            } catch (err) {
+                console.error('خطأ غير متوقع:', err);
+                showRegisterStatus('حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى', true);
+                resetRegisterButton();
+            }
+        }
+
+        function resetRegisterButton() {
+            const submitBtn = document.getElementById('registerSubmitBtn');
+            const btnText = document.getElementById('registerBtnText');
+            const spinner = document.getElementById('registerSpinner');
+            
+            submitBtn.disabled = false;
+            btnText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+        }
+
+        function handleLogout() {
+            currentTeacher = null;
+            teacherSurveys = [];
+            localStorage.removeItem('currentTeacher');
+            document.getElementById('headerButtons').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            showLoginPanel();
+        }
+
+        function showCreateSurveySection() {
+            document.getElementById('createSurveySection').classList.remove('hidden');
+            document.querySelector('#teacherPanel > div:first-child').classList.add('hidden');
+            // تعبئة اسم المدرسة تلقائياً من بيانات المعلم
+            if (currentTeacher && currentTeacher.school_name) {
+                document.getElementById('schoolName').value = currentTeacher.school_name;
+            }
+        }
+
+        function showMySurveysSection() {
+            document.getElementById('createSurveySection').classList.add('hidden');
+            document.querySelector('#teacherPanel > div:first-child').classList.remove('hidden');
+            loadTeacherSurveys();
         }
 
         function showStudentPanel() {
+            hideAllPanels();
             studentPanel.classList.remove('hidden');
-            teacherPanel.classList.add('hidden');
-            studentBtn.classList.add('bg-green-700');
-            teacherBtn.classList.remove('bg-blue-700');
             
             // Check if there's a survey to display
             if (currentSurvey) {
                 displaySurveyForStudent();
             }
+        }
+
+        async function loadTeacherSurveys() {
+            if (!currentTeacher) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('surveys')
+                    .select('*')
+                    .eq('teacher_id', currentTeacher.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('خطأ في تحميل الاستبانات:', error);
+                    return;
+                }
+
+                teacherSurveys = data || [];
+                displayTeacherSurveys();
+                
+            } catch (err) {
+                console.error('خطأ غير متوقع:', err);
+            }
+        }
+
+        function displayTeacherSurveys() {
+            const container = document.getElementById('mySurveysContainer');
+            
+            if (teacherSurveys.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">📝</div>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-4">لا توجد استبانات حتى الآن</h3>
+                        <p class="text-gray-500 mb-6">ابدأ بإنشاء أول استبانة لك</p>
+                        <button onclick="showCreateSurveySection()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                            ➕ إنشاء استبانة جديدة
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let surveysHtml = '';
+            teacherSurveys.forEach(survey => {
+                const createdDate = new Date(survey.created_at).toLocaleDateString('ar-SA');
+                const surveyLink = `${window.location.origin}${window.location.pathname}?survey=${survey.id}`;
+                surveysHtml += `
+                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">${survey.title}</h3>
+                                <p class="text-gray-600 mb-2">${survey.description || 'لا يوجد وصف'}</p>
+                                <div class="flex items-center space-x-4 space-x-reverse text-sm text-gray-500">
+                                    <span>📅 ${createdDate}</span>
+                                    <span>❓ ${survey.questions.length} سؤال</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 space-x-reverse">
+                                <button onclick="viewSurveyStats('${survey.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                    📊 الإحصائيات
+                                </button>
+                                <button onclick="copySurveyLink('${surveyLink}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                    📋 نسخ الرابط
+                                </button>
+                                <button onclick="deleteSurvey('${survey.id}')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                    🗑️ حذف
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded border">
+                            <p class="text-xs text-gray-600 mb-1">رابط الاستبانة:</p>
+                            <p class="text-xs text-gray-800 break-all">${surveyLink}</p>
+                        </div>
+                    </div>
+                `;
+            });
+// حذف الاستبانة من قاعدة البيانات
+async function deleteSurvey(surveyId) {
+    if (!confirm('هل أنت متأكد أنك تريد حذف هذه الاستبانة؟ سيتم حذف جميع الردود المرتبطة بها أيضاً.')) return;
+    try {
+        // حذف الردود المرتبطة أولاً
+        await supabase.from('responses').delete().eq('survey_id', surveyId);
+        // حذف الاستبانة
+        const { error } = await supabase.from('surveys').delete().eq('id', surveyId);
+        if (error) {
+            alert('حدث خطأ أثناء حذف الاستبانة.');
+            return;
+        }
+        // تحديث القائمة
+        await loadTeacherSurveys();
+        alert('تم حذف الاستبانة بنجاح.');
+    } catch (err) {
+        alert('حدث خطأ غير متوقع أثناء الحذف.');
+        console.error(err);
+    }
+}
+
+            container.innerHTML = surveysHtml;
+        }
+
+        function copySurveyLink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                alert('تم نسخ الرابط بنجاح!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('تم نسخ الرابط بنجاح!');
+            });
+        }
+
+        async function viewSurveyStats(surveyId) {
+            // Load survey data
+            const survey = teacherSurveys.find(s => s.id === surveyId);
+            if (!survey) return;
+
+            currentSurvey = {
+                id: survey.id,
+                schoolName: survey.school_name,
+                title: survey.title,
+                description: survey.description,
+                questions: survey.questions,
+                createdAt: new Date(survey.created_at).toLocaleString('ar-SA')
+            };
+
+            // Load responses
+            await loadSurveyResponses(surveyId);
+            
+            // Show statistics section
+            document.getElementById('statisticsSection').classList.remove('hidden');
+            showStatistics();
+            
+            // Scroll to statistics
+            document.getElementById('statisticsSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         function addQuestion() {
@@ -316,7 +1330,10 @@
         }
 
         function removeQuestion(button) {
-            button.closest('div').closest('div').remove();
+            const questionDiv = button.closest('.border-2');
+            if (questionDiv) {
+                questionDiv.remove();
+            }
         }
 
         function addOption(button) {
@@ -344,12 +1361,16 @@
         }
 
         async function generateSurvey() {
-            const schoolName = document.getElementById('schoolName').value;
+            if (!currentTeacher) {
+                alert('يجب تسجيل الدخول أولاً');
+                return;
+            }
+
             const surveyTitle = document.getElementById('surveyTitle').value;
             const surveyDescription = document.getElementById('surveyDescription').value;
             
-            if (!schoolName || !surveyTitle) {
-                alert('يرجى ملء اسم المدرسة وعنوان الاستبانة');
+            if (!surveyTitle) {
+                alert('يرجى ملء عنوان الاستبانة');
                 return;
             }
 
@@ -395,7 +1416,8 @@
 
             const surveyData = {
                 id: surveyId,
-                school_name: schoolName,
+                teacher_id: currentTeacher.id,
+                school_name: currentTeacher.school_name,
                 title: surveyTitle,
                 description: surveyDescription,
                 questions: questions,
@@ -417,7 +1439,7 @@
 
                 currentSurvey = {
                     id: surveyId,
-                    schoolName,
+                    schoolName: currentTeacher.school_name,
                     title: surveyTitle,
                     description: surveyDescription,
                     questions,
@@ -438,10 +1460,13 @@
                 // Initialize statistics
                 updateStatistics();
                 
-                // Scroll to link section
-                surveyLinkSection.scrollIntoView({ behavior: 'smooth' });
+                // Reload teacher surveys
+                await loadTeacherSurveys();
                 
-                alert('تم إنشاء الاستبانة بنجاح وحفظها في السحابة! يمكنك الآن:\n1. نسخ الرابط ومشاركته مع الطلبة\n2. مشاهدة الإحصائيات أسفل هذه الرسالة\n3. تتبع الردود في الوقت الفعلي');
+                // Go back to surveys list
+                showMySurveysSection();
+                
+                alert('تم إنشاء الاستبانة بنجاح وحفظها في السحابة! يمكنك الآن:\n1. نسخ الرابط ومشاركته مع الطلبة\n2. مشاهدة الإحصائيات من قائمة الاستبانات\n3. تتبع الردود في الوقت الفعلي');
 
             } catch (err) {
                 console.error('خطأ غير متوقع:', err);
@@ -813,7 +1838,68 @@
 
         // Export Functions
         function exportToPDF() {
-            alert('تصدير PDF - هذه الميزة تتطلب مكتبة خاصة وستكون متاحة في النسخة المتقدمة');
+            // تفعيل تصدير PDF فعلي باستخدام jsPDF مع دعم العربية (عكس النص)
+            // تصدير النص العربي معكوس باستخدام jsPDF UMD (حل مؤقت)
+            function reverseArabic(text) {
+                return text.split('').reverse().join('');
+            }
+            var pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+            pdf.setFontSize(18);
+            pdf.text(reverseArabic('تقرير بيانات الاستبيان'), 105, 20, { align: 'center' });
+            let y = 35;
+            pdf.setFontSize(12);
+            // جدول بيانات الطلاب
+            if (typeof surveyResponses !== 'undefined' && surveyResponses.length > 0 && typeof currentSurvey !== 'undefined') {
+                pdf.text(reverseArabic('اسم الطالب | تاريخ الإرسال'), 15, y);
+                y += 8;
+                surveyResponses.forEach(response => {
+                    let line = `${response.studentName} | ${response.submittedAt}`;
+                    pdf.text(reverseArabic(line), 15, y);
+                    y += 8;
+                });
+            } else {
+                pdf.text(reverseArabic('لا توجد بيانات متاحة للتصدير'), 15, y);
+                y += 8;
+            }
+
+            // إضافة صفحة جديدة للقرص الإحصائي (دائري)
+            if (typeof currentSurvey !== 'undefined' && currentSurvey.questions && currentSurvey.questions.length > 0) {
+                // اختر أول سؤال أو الأكثر شيوعاً
+                const question = currentSurvey.questions[0];
+                // حساب توزيع الإجابات
+                const optionCounts = Array(question.options.length).fill(0);
+                surveyResponses.forEach(response => {
+                    const questionResponse = response.responses[question.id];
+                    if (questionResponse) {
+                        optionCounts[questionResponse.selectedOption]++;
+                    }
+                });
+                // رسم القرص الإحصائي يدوياً
+                pdf.addPage('a4', 'portrait');
+                pdf.setFontSize(16);
+                pdf.text(reverseArabic('القرص الإحصائي لأكثر سؤال'), 105, 20, { align: 'center' });
+                // إعدادات الرسم
+                const centerX = 105, centerY = 100, radius = 50;
+                const total = optionCounts.reduce((a, b) => a + b, 0);
+                let startAngle = 0;
+                const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'];
+                for (let i = 0; i < optionCounts.length; i++) {
+                    const value = optionCounts[i];
+                    const angle = total > 0 ? (value / total) * Math.PI * 2 : 0;
+                    pdf.setFillColor(colors[i % colors.length]);
+                    pdf.circle(centerX, centerY, radius, 'F', startAngle * 180 / Math.PI, (startAngle + angle) * 180 / Math.PI);
+                    startAngle += angle;
+                }
+                // إضافة وسيلة إيضاح
+                let legendY = centerY + radius + 20;
+                for (let i = 0; i < question.options.length; i++) {
+                    pdf.setFillColor(colors[i % colors.length]);
+                    pdf.rect(40, legendY, 8, 8, 'F');
+                    pdf.text(reverseArabic(question.options[i]), 52, legendY + 7);
+                    legendY += 12;
+                }
+            }
+            pdf.save('survey_report.pdf');
         }
 
         function exportToExcel() {
@@ -984,6 +2070,9 @@
             const surveyId = urlParams.get('survey');
             
             if (surveyId) {
+                // Hide header for student view
+                document.querySelector('header').classList.add('hidden');
+                
                 // Load survey from Supabase
                 const surveyData = await loadSurvey(surveyId);
                 
@@ -1002,11 +2091,20 @@
                     // Survey not found
                     showStudentPanel();
                 }
+            } else {
+                // Check if teacher is logged in
+                const savedTeacher = localStorage.getItem('currentTeacher');
+                if (savedTeacher) {
+                    currentTeacher = JSON.parse(savedTeacher);
+                    showTeacherPanel();
+                } else {
+                    showLoginPanel();
+                }
             }
         });
 
         // Initialize with first question
         addQuestion();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98561a3b50d232ac',t:'MTc1ODkyNDc0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985647ca337e32aa',t:'MTc1ODkyNjYwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
