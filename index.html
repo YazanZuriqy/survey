@@ -298,20 +298,28 @@
                     .single();
                 
                 if (existingUser) {
-                    // Login existing user
-                    if (existingUser.password === password) {
+                    // Login existing user - only check password and school name
+                    if (existingUser.password === password && existingUser.school_name === schoolName) {
                         currentUser = existingUser;
-                        showDashboard();
-                    } else {
+                        showMessage('loginMessage', 'تم تسجيل الدخول بنجاح!', 'success');
+                        setTimeout(showDashboard, 1000);
+                    } else if (existingUser.password !== password) {
                         showMessage('loginMessage', 'كلمة المرور غير صحيحة', 'error');
+                    } else {
+                        showMessage('loginMessage', 'اسم المدرسة غير صحيح', 'error');
                     }
                 } else {
                     // Show security code field for new users
                     document.getElementById('securityCodeDiv').classList.remove('hidden');
                     
+                    if (!securityCode) {
+                        showMessage('loginMessage', 'يرجى إدخال كود الأمان لإنشاء حساب جديد', 'error');
+                        return;
+                    }
+                    
                     // Check security code for new user creation
                     if (securityCode !== '3231') {
-                        showMessage('loginMessage', 'كود الأمان غير صحيح. مطلوب للحسابات الجديدة فقط.', 'error');
+                        showMessage('loginMessage', 'كود الأمان غير صحيح. الكود الصحيح هو: 3231', 'error');
                         return;
                     }
                     
@@ -389,7 +397,18 @@
                 if (!responses || responses.length === 0) {
                     container.innerHTML = '<p class="text-gray-500 text-center">لا توجد ردود حتى الآن</p>';
                 } else {
-                    let html = '<div class="space-y-4">';
+                    // Generate statistics chart
+                    const chartHtml = generateStatisticsChart(responses);
+                    
+                    let html = `
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">الإحصائيات والرسوم البيانية</h3>
+                            ${chartHtml}
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">تفاصيل الردود الفردية</h3>
+                    `;
+                    
                     responses.forEach((response, index) => {
                         const date = new Date(response.created_at).toLocaleDateString('ar-SA');
                         html += `
@@ -412,6 +431,166 @@
             } catch (error) {
                 console.error('Error loading responses:', error);
             }
+        }
+
+        // Generate statistics chart
+        function generateStatisticsChart(responses) {
+            if (!responses || responses.length === 0) return '';
+            
+            // Calculate statistics for each question
+            const questionStats = {};
+            const optionLabels = {
+                'strongly_disagree': 'لا أوافق بشدة',
+                'disagree': 'لا أوافق',
+                'agree': 'أوافق',
+                'strongly_agree': 'أوافق بشدة',
+                'dont_know': 'لا أعرف'
+            };
+            
+            // Initialize stats for all questions
+            questions.forEach((question, index) => {
+                questionStats[`question_${index}`] = {
+                    question: question,
+                    strongly_disagree: 0,
+                    disagree: 0,
+                    agree: 0,
+                    strongly_agree: 0,
+                    dont_know: 0,
+                    total: 0
+                };
+            });
+            
+            // Count responses
+            responses.forEach(response => {
+                Object.keys(response.answers).forEach(questionKey => {
+                    if (questionStats[questionKey]) {
+                        const answers = response.answers[questionKey];
+                        if (Array.isArray(answers)) {
+                            answers.forEach(answer => {
+                                if (questionStats[questionKey][answer] !== undefined) {
+                                    questionStats[questionKey][answer]++;
+                                    questionStats[questionKey].total++;
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Generate overall satisfaction chart
+            let overallStats = {
+                strongly_disagree: 0,
+                disagree: 0,
+                agree: 0,
+                strongly_agree: 0,
+                dont_know: 0
+            };
+            
+            Object.values(questionStats).forEach(stat => {
+                overallStats.strongly_disagree += stat.strongly_disagree;
+                overallStats.disagree += stat.disagree;
+                overallStats.agree += stat.agree;
+                overallStats.strongly_agree += stat.strongly_agree;
+                overallStats.dont_know += stat.dont_know;
+            });
+            
+            const totalResponses = Object.values(overallStats).reduce((a, b) => a + b, 0);
+            
+            let chartHtml = `
+                <div class="bg-white p-6 rounded-xl border border-gray-200 mb-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4">الإحصائيات العامة (${responses.length} رد)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-medium text-gray-700 mb-3">توزيع الردود الإجمالي</h5>
+                            <div class="space-y-2">
+            `;
+            
+            Object.keys(overallStats).forEach(key => {
+                const count = overallStats[key];
+                const percentage = totalResponses > 0 ? ((count / totalResponses) * 100).toFixed(1) : 0;
+                const color = getColorForOption(key);
+                
+                chartHtml += `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded ${color} ml-2"></div>
+                            <span class="text-sm">${optionLabels[key]}</span>
+                        </div>
+                        <div class="text-sm font-medium">${count} (${percentage}%)</div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="${color} h-2 rounded-full" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+            });
+            
+            chartHtml += `
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-gray-700 mb-3">معلومات إضافية</h5>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>إجمالي الردود:</strong> ${responses.length}</p>
+                                <p><strong>إجمالي الإجابات:</strong> ${totalResponses}</p>
+                                <p><strong>متوسط الإجابات لكل رد:</strong> ${(totalResponses / responses.length).toFixed(1)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Generate top 5 questions chart
+            const sortedQuestions = Object.entries(questionStats)
+                .map(([key, stats]) => ({
+                    key,
+                    question: stats.question,
+                    positivePercentage: stats.total > 0 ? (((stats.agree + stats.strongly_agree) / stats.total) * 100) : 0,
+                    total: stats.total
+                }))
+                .filter(q => q.total > 0)
+                .sort((a, b) => b.positivePercentage - a.positivePercentage)
+                .slice(0, 5);
+            
+            if (sortedQuestions.length > 0) {
+                chartHtml += `
+                    <div class="bg-white p-6 rounded-xl border border-gray-200">
+                        <h4 class="text-lg font-bold text-gray-800 mb-4">أعلى 5 أسئلة من ناحية الرضا</h4>
+                        <div class="space-y-4">
+                `;
+                
+                sortedQuestions.forEach((item, index) => {
+                    chartHtml += `
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm font-medium text-gray-700 flex-1 ml-4">${index + 1}. ${item.question.substring(0, 80)}...</p>
+                                <span class="text-sm font-bold text-green-600">${item.positivePercentage.toFixed(1)}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-green-500 h-3 rounded-full" style="width: ${item.positivePercentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                chartHtml += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return chartHtml;
+        }
+
+        // Get color for option
+        function getColorForOption(option) {
+            const colors = {
+                'strongly_disagree': 'bg-red-500',
+                'disagree': 'bg-orange-400',
+                'agree': 'bg-green-400',
+                'strongly_agree': 'bg-green-600',
+                'dont_know': 'bg-gray-400'
+            };
+            return colors[option] || 'bg-gray-400';
         }
 
         // Load survey for public access
@@ -518,5 +697,5 @@
             showPage('loginPage');
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9859c767269d7ad1',t:'MTc1ODk2MzI5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9859d4f7c40cb1b7',t:'MTc1ODk2Mzg0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
