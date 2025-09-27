@@ -83,26 +83,112 @@
                     </button>
                 </div>
                 
-                <div class="grid md:grid-cols-2 gap-6">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">رابط الاستبيان الخاص بك</h3>
+                        <h3 class="text-xl font-bold mb-4">استبيان أولياء الأمور</h3>
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
-                            <p class="text-sm break-all" id="surveyLink"></p>
+                            <p class="text-sm break-all" id="parentsLink"></p>
                         </div>
-                        <button onclick="copyLink()" 
-                                class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                            نسخ الرابط
-                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="copyLink('parents')" 
+                                    class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
+                                نسخ الرابط
+                            </button>
+                            <button onclick="viewResponses('parents')" 
+                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
+                                عرض الردود (<span id="parentsCount">0</span>)
+                            </button>
+                        </div>
                     </div>
-                    
+
                     <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">إحصائيات الردود</h3>
-                        <div class="text-3xl font-bold mb-2" id="responseCount">0</div>
-                        <p class="text-green-100">إجمالي الردود</p>
-                        <button onclick="viewResponses()" 
-                                class="mt-4 bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
-                            عرض التفاصيل
-                        </button>
+                        <h3 class="text-xl font-bold mb-4">استبيان الكادر المدرسي</h3>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
+                            <p class="text-sm break-all" id="staffLink"></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="copyLink('staff')" 
+                                    class="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
+                                نسخ الرابط
+                            </button>
+                            <button onclick="viewResponses('staff')" 
+                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
+                                عرض الردود (<span id="staffCount">0</span>)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">استبيان الطلبة الصفوف 1-4</h3>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
+                            <p class="text-sm break-all" id="students1_4Link"></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="copyLink('students_1_4')" 
+                                    class="bg-white text-yellow-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
+                                نسخ الرابط
+                            </button>
+                            <button onclick="viewResponses('students_1_4')" 
+                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
+                                عرض الردود (<span id="students1_4Count">0</span>)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-indigo-400 to-indigo-600 text-white p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">استبيان الطلبة الصفوف الأكاديمية 5-12</h3>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
+                            <p class="text-sm break-all" id="students5_12Link"></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="copyLink('students_5_12')" 
+                                    class="bg-white text-indigo-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
+                                نسخ الرابط
+                            </button>
+                            <button onclick="viewResponses('students_5_12')" 
+                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
+                                عرض الردود (<span id="students5_12Count">0</span>)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-pink-400 to-pink-600 text-white p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">استبيان الطلبة الصفوف المهنية 10-12</h3>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg mb-4">
+                            <p class="text-sm break-all" id="studentsVocationalLink"></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="copyLink('students_vocational')" 
+                                    class="bg-white text-pink-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-200 font-medium">
+                                نسخ الرابط
+                            </button>
+                            <button onclick="viewResponses('students_vocational')" 
+                                    class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-30 transition duration-200 font-medium">
+                                عرض الردود (<span id="studentsVocationalCount">0</span>)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4">إحصائيات عامة</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" id="totalResponses">0</div>
+                            <p class="text-purple-100 text-sm">إجمالي الردود</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" id="parentsResponses">0</div>
+                            <p class="text-purple-100 text-sm">ردود أولياء الأمور</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" id="staffResponses">0</div>
+                            <p class="text-purple-100 text-sm">ردود الكادر</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" id="todayResponses">0</div>
+                            <p class="text-purple-100 text-sm">ردود اليوم</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,8 +206,8 @@
         <div class="max-w-4xl mx-auto">
             <div class="bg-white rounded-2xl shadow-xl p-8">
                 <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4">استبيان آراء أولياء الأمور ومقدمي الرعاية لمراجعة أداء المدرسة</h1>
-                    <div class="bg-blue-50 p-6 rounded-xl text-right">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-4" id="surveyTitle">استبيان آراء أولياء الأمور ومقدمي الرعاية لمراجعة أداء المدرسة</h1>
+                    <div class="bg-blue-50 p-6 rounded-xl text-right" id="surveyIntro">
                         <p class="text-lg font-semibold text-gray-800 mb-4">السيد ولي أمر ومقدم الرعاية المحترم</p>
                         <p class="text-gray-700 mb-4">تعمل مدرسة: <span id="surveySchoolName" class="font-bold text-blue-600"></span> على تحسين جودة تعلم أبنائنا الطلبة وتعليمهم. لذا نحتاج مساعدتك في المشاركة في هذا الاستطلاع، فرأيك سيساهم في فهم شامل لنقاط القوة ومجالات التطوير داخل مجتمع مدرستنا، وكيف يمكن تلبية احتياجات طلبتنا بشكل أفضل؟</p>
                         
@@ -138,28 +224,18 @@
                     <!-- Personal Info -->
                     <div class="bg-gray-50 p-6 rounded-xl">
                         <h3 class="text-xl font-bold text-gray-800 mb-4">المعلومات الشخصية</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">الجنس</label>
-                                <select id="gender" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                    <option value="">اختر...</option>
-                                    <option value="father">الأب</option>
-                                    <option value="mother">الأم</option>
-                                    <option value="other">مقدم الرعاية</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">عدد الأبناء الملتحقين في هذه المدرسة</label>
-                                <input type="number" id="childrenCount" min="1" required 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            </div>
+                        <div class="grid md:grid-cols-2 gap-6" id="personalInfoContainer">
+                            <!-- Dynamic personal info fields will be generated here -->
                         </div>
                     </div>
                     
                     <!-- Survey Questions -->
                     <div id="questionsContainer" class="space-y-6"></div>
+                    
+                    <!-- Special Question for Staff -->
+                    <div id="specialQuestionContainer" class="hidden bg-gray-50 p-6 rounded-xl">
+                        <!-- Special question will be generated here for staff survey -->
+                    </div>
                     
                     <!-- Open Text Field -->
                     <div class="bg-gray-50 p-6 rounded-xl">
@@ -195,26 +271,262 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ucXhweXRreXNpZmpibnVxenJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MjE1NjAsImV4cCI6MjA3NDQ5NzU2MH0.8qpnTsI59j0oe7NfmMBFx1XdGWT10XHJCNN0mBPMYFs';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Survey Questions
-        const questions = [
-            "بشكل عام أبنائي سعداء بالذهاب كل يوم إلى هذه المدرسة",
-            "مبنى المدرسة آمن ونظيف ويتم صيانته جيدًا",
-            "حمامات المدرسة ومرافقها آمنة ونظيفة وذات خصوصية",
-            "المدرسة توفر مواد تعليمية وتعلمية كافية، بما في ذلك الكتب المدرسية وأجهزة الكمبيوتر",
-            "المدرسة تشجع جوًا من الحرية الأكاديمية، مما يسمح لأبنائي بالتعبير عن آرائهم ومقترحاتهم في الصف",
-            "أرى تأثيرًا إيجابيًا من المعلمين على قيم أبنائي وممارساتهم وسلوكهم داخل المدرسة وخارجها",
-            "أنا راضٍ عن جهود المدرسة في معالجة وسد الفجوات التعليمية لدى أبنائي",
-            "توفر المدرسة الدعم المناسب لاحتياجات التعلم الخاصة بأبنائي",
-            "ممارسات التقييم (مثل: الاختبارات والواجبات) عادلة وشفافة وتعمل بشكل جيد للتحقق من مدى جودة تعلم أبنائي",
-            "تساعدني المدرسة في معرفة كيفية دعم تعلم أبنائي في المنزل",
-            "أنا راضٍ عن الطريقة التي تستخدمها المدرسة لحماية أبنائي وحل مشاكل مثل: التنمر والتخريب والعنف",
-            "المدرسة تحترم رأيي وتشركني في حل مشكلات أبنائي النفسية والاجتماعية وتعزيز نموهم الاجتماعي والعاطفي",
-            "تقدم المدرسة أنشطة قيادية كافية للطلبة، مثل: برلمان الطلبة، والإذاعة المدرسية، والمشاركة في صنع القرار",
-            "تقدم المدرسة أنشطة إثرائية كافية للطلبة؟ (مثل: الأندية والمسابقات الرياضية والمعارض الفنية)",
-            "تتعاون المدرسة بفاعلية مع المجتمع المحلي، وتسهل مساهمتهم الإيجابية، وشراكتهم لدعم خطة تحسين المدرسة",
-            "توفر المدرسة فرصًا كافية للمجتمع للوصول إلى المدرسة أو استخدام مرافقها: للأغراض الترفيهية أو التعليمية للبالغين",
-            "أنا على علم بالخطة التطويرية للمدرسة، ولدي فرص للمساهمة في تحسينها وتنفيذها"
-        ];
+        // Survey Types and Questions
+        const surveyTypes = {
+            'parents': {
+                title: 'استبيان آراء أولياء الأمور ومقدمي الرعاية لمراجعة أداء المدرسة',
+                intro: `
+                    <p class="text-lg font-semibold text-gray-800 mb-4">السيد ولي أمر ومقدم الرعاية المحترم</p>
+                    <p class="text-gray-700 mb-4">تعمل مدرسة: <span id="surveySchoolName" class="font-bold text-blue-600"></span> على تحسين جودة تعلم أبنائنا الطلبة وتعليمهم. لذا نحتاج مساعدتك في المشاركة في هذا الاستطلاع، فرأيك سيساهم في فهم شامل لنقاط القوة ومجالات التطوير داخل مجتمع مدرستنا، وكيف يمكن تلبية احتياجات طلبتنا بشكل أفضل؟</p>
+                    
+                    <div class="text-right space-y-2">
+                        <p><strong>أ.</strong> ستكون إجاباتك على الاستبيان سرية ولن تستخدم إلا لأغراض تحسين المدرسة والتخطيط لها.</p>
+                        <p><strong>ب.</strong> من فضلك خذ بضع الوقت للتفكير في تجاربك ووجهة نظرك عند كل سؤال.</p>
+                        <p><strong>ج.</strong> حدد الإجابة أو الإجابات -لكل سؤال-التي تتوافق بشكل أفضل مع شعورك وملاحظتك.</p>
+                        <p><strong>د.</strong> لا تتردد في اختيار أكثر من خيار واحد إذا اقتضى الأمر.</p>
+                    </div>
+                `,
+                personalInfo: [
+                    {
+                        id: 'gender',
+                        label: 'الجنس',
+                        type: 'select',
+                        options: [
+                            { value: 'father', text: 'الأب' },
+                            { value: 'mother', text: 'الأم' },
+                            { value: 'other', text: 'مقدم الرعاية' }
+                        ]
+                    },
+                    {
+                        id: 'childrenCount',
+                        label: 'عدد الأبناء الملتحقين في هذه المدرسة',
+                        type: 'number'
+                    }
+                ],
+                questions: [
+                    "بشكل عام أبنائي سعداء بالذهاب كل يوم إلى هذه المدرسة",
+                    "مبنى المدرسة آمن ونظيف ويتم صيانته جيدًا",
+                    "حمامات المدرسة ومرافقها آمنة ونظيفة وذات خصوصية",
+                    "المدرسة توفر مواد تعليمية وتعلمية كافية، بما في ذلك الكتب المدرسية وأجهزة الكمبيوتر",
+                    "المدرسة تشجع جوًا من الحرية الأكاديمية، مما يسمح لأبنائي بالتعبير عن آرائهم ومقترحاتهم في الصف",
+                    "أرى تأثيرًا إيجابيًا من المعلمين على قيم أبنائي وممارساتهم وسلوكهم داخل المدرسة وخارجها",
+                    "أنا راضٍ عن جهود المدرسة في معالجة وسد الفجوات التعليمية لدى أبنائي",
+                    "توفر المدرسة الدعم المناسب لاحتياجات التعلم الخاصة بأبنائي",
+                    "ممارسات التقييم (مثل: الاختبارات والواجبات) عادلة وشفافة وتعمل بشكل جيد للتحقق من مدى جودة تعلم أبنائي",
+                    "تساعدني المدرسة في معرفة كيفية دعم تعلم أبنائي في المنزل",
+                    "أنا راضٍ عن الطريقة التي تستخدمها المدرسة لحماية أبنائي وحل مشاكل مثل: التنمر والتخريب والعنف",
+                    "المدرسة تحترم رأيي وتشركني في حل مشكلات أبنائي النفسية والاجتماعية وتعزيز نموهم الاجتماعي والعاطفي",
+                    "تقدم المدرسة أنشطة قيادية كافية للطلبة، مثل: برلمان الطلبة، والإذاعة المدرسية، والمشاركة في صنع القرار",
+                    "تقدم المدرسة أنشطة إثرائية كافية للطلبة؟ (مثل: الأندية والمسابقات الرياضية والمعارض الفنية)",
+                    "تتعاون المدرسة بفاعلية مع المجتمع المحلي، وتسهل مساهمتهم الإيجابية، وشراكتهم لدعم خطة تحسين المدرسة",
+                    "توفر المدرسة فرصًا كافية للمجتمع للوصول إلى المدرسة أو استخدام مرافقها: للأغراض الترفيهية أو التعليمية للبالغين",
+                    "أنا على علم بالخطة التطويرية للمدرسة، ولدي فرص للمساهمة في تحسينها وتنفيذها"
+                ]
+            },
+            'staff': {
+            },
+            'students_1_4': {
+                title: 'استبيان آراء الطلبة للصفوف 1-4',
+                intro: `
+                    <p class="text-lg font-semibold text-gray-800 mb-4">عزيزي الطالب/عزيزتي الطالبة</p>
+                    <p class="text-gray-700 mb-4">نود معرفة رأيك حول مدرستك وتجربتك فيها. إجاباتك ستساعدنا في تحسين المدرسة وجعلها مكانًا أفضل للجميع.</p>
+                    <div class="text-right space-y-2">
+                        <p><strong>أ.</strong> إجاباتك سرية ولن تستخدم إلا لتحسين المدرسة.</p>
+                        <p><strong>ب.</strong> أجب بصراحة واختَر ما يعبر عن رأيك.</p>
+                    </div>
+                `,
+                personalInfo: [
+                    {
+                        id: 'student_name',
+                        label: 'اسم الطالب',
+                        type: 'text'
+                    },
+                    {
+                        id: 'grade',
+                        label: 'الصف الدراسي',
+                        type: 'select',
+                        options: [
+                            { value: '1', text: 'الأول' },
+                            { value: '2', text: 'الثاني' },
+                            { value: '3', text: 'الثالث' },
+                            { value: '4', text: 'الرابع' }
+                        ]
+                    }
+                ],
+                questions: [
+                    "أشعر بالسعادة في المدرسة",
+                    "مدرستي نظيفة وآمنة",
+                    "المعلمون يساعدونني عندما أحتاج للمساعدة",
+                    "أستطيع التعبير عن رأيي في الصف",
+                    "أشعر أن أصدقائي يعاملونني بلطف",
+                    "أحب الأنشطة المدرسية مثل الأندية أو المسابقات"
+                ]
+            },
+            'students_5_12': {
+                title: 'استبيان آراء الطلبة للصفوف الأكاديمية 5-12',
+                intro: `
+                    <p class="text-lg font-semibold text-gray-800 mb-4">عزيزي الطالب/عزيزتي الطالبة</p>
+                    <p class="text-gray-700 mb-4">نود معرفة رأيك حول مدرستك وتجربتك فيها. إجاباتك ستساعدنا في تحسين المدرسة وجعلها مكانًا أفضل للجميع.</p>
+                    <div class="text-right space-y-2">
+                        <p><strong>أ.</strong> إجاباتك سرية ولن تستخدم إلا لتحسين المدرسة.</p>
+                        <p><strong>ب.</strong> أجب بصراحة واختَر ما يعبر عن رأيك.</p>
+                    </div>
+                `,
+                personalInfo: [
+                    {
+                        id: 'student_name',
+                        label: 'اسم الطالب',
+                        type: 'text'
+                    },
+                    {
+                        id: 'grade',
+                        label: 'الصف الدراسي',
+                        type: 'select',
+                        options: [
+                            { value: '5', text: 'الخامس' },
+                            { value: '6', text: 'السادس' },
+                            { value: '7', text: 'السابع' },
+                            { value: '8', text: 'الثامن' },
+                            { value: '9', text: 'التاسع' },
+                            { value: '10', text: 'العاشر' },
+                            { value: '11', text: 'الحادي عشر' },
+                            { value: '12', text: 'الثاني عشر' }
+                        ]
+                    }
+                ],
+                questions: [
+                    "أشعر بالأمان في المدرسة",
+                    "المدرسة توفر بيئة تعليمية جيدة",
+                    "المعلمون يشجعونني على التفكير والإبداع",
+                    "أشعر أن رأيي يُحترم في المدرسة",
+                    "هناك أنشطة مدرسية متنوعة تناسب اهتماماتي",
+                    "أشعر أن المدرسة تساعدني على تطوير مهاراتي للمستقبل"
+                ]
+            },
+            'students_vocational': {
+                title: 'استبيان آراء الطلبة للصفوف المهنية 10-12',
+                intro: `
+                    <p class="text-lg font-semibold text-gray-800 mb-4">عزيزي الطالب/عزيزتي الطالبة في التعليم المهني</p>
+                    <p class="text-gray-700 mb-4">نود معرفة رأيك حول تجربتك في التعليم المهني. إجاباتك ستساعدنا في تطوير البرامج المهنية وتحسين بيئة التعلم.</p>
+                    <div class="text-right space-y-2">
+                        <p><strong>أ.</strong> إجاباتك سرية ولن تستخدم إلا لتحسين المدرسة.</p>
+                        <p><strong>ب.</strong> أجب بصراحة واختَر ما يعبر عن رأيك.</p>
+                    </div>
+                `,
+                personalInfo: [
+                    {
+                        id: 'student_name',
+                        label: 'اسم الطالب',
+                        type: 'text'
+                    },
+                    {
+                        id: 'grade',
+                        label: 'الصف الدراسي',
+                        type: 'select',
+                        options: [
+                            { value: '10', text: 'العاشر المهني' },
+                            { value: '11', text: 'الحادي عشر المهني' },
+                            { value: '12', text: 'الثاني عشر المهني' }
+                        ]
+                    },
+                    {
+                        id: 'vocational_program',
+                        label: 'اسم البرنامج المهني',
+                        type: 'text'
+                    }
+                ],
+                questions: [
+                    "أشعر أن البرنامج المهني الذي أدرسه مفيد لي",
+                    "المشاغل والمختبرات المهنية مجهزة بشكل جيد",
+                    "المعلمون في التعليم المهني يدعمونني في تطوير مهاراتي",
+                    "أشعر أن المدرسة توفر فرصًا عملية كافية في البرنامج المهني",
+                    "هناك أنشطة مهنية إضافية تساعدني على التعلم والتطور",
+                    "أشعر أن المدرسة تتابع تقدمي وتدعم نجاحي في البرنامج المهني"
+                ]
+            },
+            // الاستبيانات الجديدة أغلقت هنا
+            'staff': {
+                intro: `
+                    <p class="text-lg font-semibold text-gray-800 mb-4">عزيزي عضو الكادر المدرسي</p>
+                    <p class="text-gray-700 mb-4">نسعى في مدرسة: <span id="surveySchoolName" class="font-bold text-blue-600"></span> إلى تطوير أدائنا وتحسين بيئة العمل والتعلم. رأيك كعضو في الكادر المدرسي مهم جداً لنا لفهم نقاط القوة ومجالات التطوير في قيادة المدرسة وإدارتها.</p>
+                    
+                    <div class="text-right space-y-2">
+                        <p><strong>أ.</strong> ستكون إجاباتك على الاستبيان سرية تماماً ولن تستخدم إلا لأغراض تحسين المدرسة.</p>
+                        <p><strong>ب.</strong> يرجى الإجابة بصراحة وموضوعية على جميع الأسئلة.</p>
+                        <p><strong>ج.</strong> حدد الإجابة التي تعكس تجربتك الفعلية في المدرسة.</p>
+                        <p><strong>د.</strong> في السؤال الأخير يمكنك اختيار أكثر من خيار واحد.</p>
+                    </div>
+                `,
+                personalInfo: [
+                    {
+                        id: 'position',
+                        label: 'المنصب/الوظيفة',
+                        type: 'select',
+                        options: [
+                            { value: 'teacher', text: 'معلم/معلمة' },
+                            { value: 'admin_staff', text: 'موظف إداري' },
+                            { value: 'counselor', text: 'مرشد تربوي' },
+                            { value: 'coordinator', text: 'منسق' },
+                            { value: 'other', text: 'أخرى' }
+                        ]
+                    },
+                    {
+                        id: 'experience',
+                        label: 'سنوات الخبرة في هذه المدرسة',
+                        type: 'select',
+                        options: [
+                            { value: '1', text: 'أقل من سنة' },
+                            { value: '1-3', text: '1-3 سنوات' },
+                            { value: '4-7', text: '4-7 سنوات' },
+                            { value: '8+', text: '8 سنوات أو أكثر' }
+                        ]
+                    }
+                ],
+                questions: [
+                    "توفر المدرسة للموظفين فرصًا للتطوير المهني ذات جودة عالية",
+                    "الدعم الذي تقدمه مديرية التربية والمشرفون ومستشارو تطوير المدرسة مفيد بشكل مباشر لتطوير المدرسة",
+                    "يحافظ المجتمع المدرسي على توقعات عالية للجميع ويشجع الموظفين والطلبة على تحقيق التميز الأكاديمي والمساهمة الإيجابية",
+                    "المدرسة تعزز وتشكل ثقافة تقدر التنوع الشامل والاحترام والتعاطف",
+                    "المدرسة تعمل على تعزيز فرص القيادة للموظفين، بما يسمح لهم بتطوير مهارات القيادة والمشاركة في صنع القرار",
+                    "المدرسة توفر أنشطة إثرائية ذات صلة وممتعة للطلبة",
+                    "بشكل عام، طلابنا واثقون ومتفاعلون وإيجابيون بشأن التعلم",
+                    "البنية التحتية المادية للمدرسة ومرافقها ومواردها تتيح المشاركة لجميع الطلبة بحسب قدراتهم، بما في ذلك الأشخاص ذوي الإعاقة أو تحديات في الحركة وتلبي احتياجات البنين والبنات فيما يتعلق بالخصوصية والأمن",
+                    "الصفوف الدراسية تحتوي على الأثاث الأساسي والموارد اللازمة للتعلم، وتولي المدرسة أهمية كبيرة للصيانة والنظافة",
+                    "المدرسة تهتم بإجراءات السلامة لضمان رفاهية وأمن الطلاب والطالبات أثناء وجودهم في المدرسة وفي الطريق إليها",
+                    "لدى المدرسة خطة فعالة للصيانة المدرسة تتوافق مع سياسة إدارة المرافق المدرسية وإجراءات التمويل الخاصة بوزارة التربية والتعليم",
+                    "لدى المدرسة خطة محدثة للطوارئ يعرفها الموظفون والطلبة",
+                    "توفر المدرسة مجموعة من الخدمات الداعمة لتلبية احتياجات الطلبة الفردية مثل الخدمات الإرشادية، وبرامج الصحة، ووسائل تسهيل الوصول، ومبادرات الدعم الأكاديمي",
+                    "لدى المدرسة إجراءات للتعامل مع قضايا حماية الطفل مثل: سلوك الطلبة، والتنمر، والتمييز، والتخريب، وغيرها من أشكال السلوك غير الاجتماعي",
+                    "المدرسة تتواصل بشكل فعال مع أولياء الأمور ومقدمي الرعاية بشأن تقدم أبنائهم وسلوكهم",
+                    "المدرسة تتعاون مع المجتمع لحشد الموارد من أجل تنفيذ خطة تحسين المدرسة",
+                    "تتابع المدرسة أعداد الخريجين بحسب برامج التعليم المهنية لتقييم نجاح هذه البرامج وتحدياتها",
+                    "تحصر القيادة حاجات معلمي التعليم المهني والتقني ومتطلباتهم التدريبية، وتبني خطة تنمية مهنية بناء على هذه الحاجات والمتطلبات",
+                    "توفر الإدارة المدرسيّة مصادر التعلم للمشاغل المهنية والمختبرات الخاصة بالتعليم المهني التقني",
+                    "تستثمر الإدارة المدرسيّة الأعمال الإنتاجية للطلبة بما يتوافق مع تعليمات التعليم المهني وضوابطه",
+                    "تتبنى المدرسة نظامًا عادلًا وشفافًا للتعامل مع اعتراضات وشكاوى الطلبة والكادر المدرسي وتوفر إجراءات سهلة للتعامل معها والمتابعة المنتظمة لها",
+                    "تواكب المدرسة المستجدات والتطورات في التعليم المهني التقني استنادًا إلى تقييمات منهجية شفافة",
+                    "تستلم المدرسة بيانات الطلبة وتراجعها قبل رفعها على منصة التعليم المهني التقني (EMIS) وتسجلها بشكل صحيح حسب البرنامج المعتمد لديهم",
+                    "تحتفظ المدرسة بسجلات التدقيق الداخلي في المدرسة",
+                    "تدقّق المدرسة سجلات تقييم المعلمين لطلبة التعليم المهني التقني وملف التخزين (Storage Folder)",
+                    "تدعم المدرسة مشرفي التعليم المهني إداريًا وفنيًا وتتحقق من جاهزية المشاغل والمختبرات"
+                ],
+                specialQuestion: {
+                    question: "أسباب شعوري بالمتعة والرفاه المهني في مدرستي (يمكن اختيار أكثر من خيار)",
+                    options: [
+                        { value: 'supportive_colleagues', text: 'الزملاء الداعمون' },
+                        { value: 'student_engagement', text: 'مشاركة الطلبة' },
+                        { value: 'collaborative_environment', text: 'بيئة العمل المشترك' },
+                        { value: 'resource_access', text: 'الوصول إلى الموارد' },
+                        { value: 'supportive_leadership', text: 'فريق القيادة النشط والداعم' },
+                        { value: 'none', text: 'لا شيء مما ذكر' }
+                    ]
+                }
+            }
+        };
+
+        let currentSurveyType = 'parents';
+        let currentSurveyId = null;
+        let questions = [];
 
         const options = [
             { value: 'strongly_disagree', text: 'لا أوافق بشدة' },
@@ -230,9 +542,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const surveyId = urlParams.get('survey');
+            const surveyType = urlParams.get('type') || 'parents';
             
             if (surveyId) {
-                loadSurvey(surveyId);
+                loadSurvey(surveyId, surveyType);
             } else {
                 // Check if user is already logged in
                 const savedUser = localStorage.getItem('currentUser');
@@ -248,15 +561,49 @@
                     showPage('loginPage');
                 }
             }
-            
-            generateQuestions();
         });
 
         // Generate survey questions
-        function generateQuestions() {
+        function generateQuestions(surveyType = 'parents') {
             const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
+            const personalInfoContainer = document.getElementById('personalInfoContainer');
+            const specialQuestionContainer = document.getElementById('specialQuestionContainer');
             
+            container.innerHTML = '';
+            personalInfoContainer.innerHTML = '';
+            specialQuestionContainer.innerHTML = '';
+            
+            const survey = surveyTypes[surveyType];
+            questions = survey.questions;
+            
+            // Generate personal info fields
+            survey.personalInfo.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                
+                if (field.type === 'select') {
+                    let optionsHtml = '<option value="">اختر...</option>';
+                    field.options.forEach(option => {
+                        optionsHtml += `<option value="${option.value}">${option.text}</option>`;
+                    });
+                    
+                    fieldDiv.innerHTML = `
+                        <label class="block text-sm font-medium text-gray-700 mb-2">${field.label}</label>
+                        <select id="${field.id}" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            ${optionsHtml}
+                        </select>
+                    `;
+                } else if (field.type === 'number') {
+                    fieldDiv.innerHTML = `
+                        <label class="block text-sm font-medium text-gray-700 mb-2">${field.label}</label>
+                        <input type="number" id="${field.id}" min="1" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    `;
+                }
+                
+                personalInfoContainer.appendChild(fieldDiv);
+            });
+            
+            // Generate main questions
             questions.forEach((question, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'bg-gray-50 p-6 rounded-xl';
@@ -281,6 +628,29 @@
                 
                 container.appendChild(questionDiv);
             });
+            
+            // Generate special question for staff
+            if (surveyType === 'staff' && survey.specialQuestion) {
+                specialQuestionContainer.classList.remove('hidden');
+                
+                let specialOptionsHtml = '';
+                survey.specialQuestion.options.forEach(option => {
+                    specialOptionsHtml += `
+                        <label class="flex items-center space-x-3 space-x-reverse p-3 hover:bg-gray-100 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="special_question" value="${option.value}"
+                                   class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 rounded">
+                            <span class="text-gray-700">${option.text}</span>
+                        </label>
+                    `;
+                });
+                
+                specialQuestionContainer.innerHTML = `
+                    <h4 class="text-lg font-medium text-gray-800 mb-4">${survey.specialQuestion.question}</h4>
+                    <div class="space-y-2">
+                        ${specialOptionsHtml}
+                    </div>
+                `;
+            }
         }
 
         // Show specific page
@@ -368,79 +738,234 @@
         // Show dashboard
         function showDashboard() {
             document.getElementById('schoolNameDisplay').textContent = currentUser.school_name;
-            document.getElementById('surveyLink').textContent = 
-                `${window.location.origin}${window.location.pathname}?survey=${currentUser.unique_id}`;
-            
-            loadResponseCount();
+            // Generate survey links
+            const baseUrl = `${window.location.origin}${window.location.pathname}`;
+            document.getElementById('parentsLink').textContent = `${baseUrl}?survey=${currentUser.unique_id}&type=parents`;
+            document.getElementById('staffLink').textContent = `${baseUrl}?survey=${currentUser.unique_id}&type=staff`;
+            document.getElementById('students1_4Link').textContent = `${baseUrl}?survey=${currentUser.unique_id}&type=students_1_4`;
+            document.getElementById('students5_12Link').textContent = `${baseUrl}?survey=${currentUser.unique_id}&type=students_5_12`;
+            document.getElementById('studentsVocationalLink').textContent = `${baseUrl}?survey=${currentUser.unique_id}&type=students_vocational`;
+            loadResponseCounts();
             showPage('dashboardPage');
         }
 
-        // Load response count
-        async function loadResponseCount() {
+        // Load response counts
+        async function loadResponseCounts() {
             try {
-                const { count } = await supabase
+                // Load parents responses
+                const { count: parentsCount } = await supabase
                     .from('responses')
                     .select('*', { count: 'exact', head: true })
-                    .eq('user_id', currentUser.id);
-                
-                document.getElementById('responseCount').textContent = count || 0;
+                    .eq('user_id', currentUser.id)
+                    .eq('survey_type', 'parents');
+
+                // Load staff responses
+                const { count: staffCount } = await supabase
+                    .from('responses')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('survey_type', 'staff');
+
+                // Load students 1-4 responses
+                const { count: students1_4Count } = await supabase
+                    .from('responses')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('survey_type', 'students_1_4');
+
+                // Load students 5-12 responses
+                const { count: students5_12Count } = await supabase
+                    .from('responses')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('survey_type', 'students_5_12');
+
+                // Load students vocational responses
+                const { count: studentsVocationalCount } = await supabase
+                    .from('responses')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('survey_type', 'students_vocational');
+
+                // Load today's responses
+                const today = new Date().toISOString().split('T')[0];
+                const { count: todayCount } = await supabase
+                    .from('responses')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .gte('created_at', today);
+
+                const totalCount = (parentsCount || 0) + (staffCount || 0) + (students1_4Count || 0) + (students5_12Count || 0) + (studentsVocationalCount || 0);
+
+                document.getElementById('parentsCount').textContent = parentsCount || 0;
+                document.getElementById('staffCount').textContent = staffCount || 0;
+                document.getElementById('students1_4Count').textContent = students1_4Count || 0;
+                document.getElementById('students5_12Count').textContent = students5_12Count || 0;
+                document.getElementById('studentsVocationalCount').textContent = studentsVocationalCount || 0;
+                document.getElementById('totalResponses').textContent = totalCount;
+                document.getElementById('parentsResponses').textContent = parentsCount || 0;
+                document.getElementById('staffResponses').textContent = staffCount || 0;
+                document.getElementById('todayResponses').textContent = todayCount || 0;
             } catch (error) {
-                console.error('Error loading response count:', error);
+                console.error('Error loading response counts:', error);
             }
         }
 
         // Copy survey link
-        function copyLink() {
-            const link = document.getElementById('surveyLink').textContent;
-            navigator.clipboard.writeText(link).then(() => {
-                alert('تم نسخ الرابط بنجاح!');
-            });
+        function copyLink(surveyType) {
+            let linkId = '';
+            let surveyName = '';
+            switch (surveyType) {
+                case 'parents':
+                    linkId = 'parentsLink';
+                    surveyName = 'أولياء الأمور';
+                    break;
+                case 'staff':
+                    linkId = 'staffLink';
+                    surveyName = 'الكادر المدرسي';
+                    break;
+                case 'students_1_4':
+                    linkId = 'students1_4Link';
+                    surveyName = 'الطلبة الصفوف 1-4';
+                    break;
+                case 'students_5_12':
+                    linkId = 'students5_12Link';
+                    surveyName = 'الطلبة الصفوف الأكاديمية 5-12';
+                    break;
+                case 'students_vocational':
+                    linkId = 'studentsVocationalLink';
+                    surveyName = 'الطلبة الصفوف المهنية 10-12';
+                    break;
+                default:
+                    linkId = '';
+                    surveyName = '';
+            }
+            if (linkId) {
+                const link = document.getElementById(linkId).textContent;
+                navigator.clipboard.writeText(link).then(() => {
+                    alert(`تم نسخ رابط استبيان ${surveyName} بنجاح!`);
+                });
+            }
         }
 
         // View responses
-        async function viewResponses() {
+        async function viewResponses(surveyType = 'all') {
             try {
-                const { data: responses } = await supabase
+                let query = supabase
                     .from('responses')
                     .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
+                    .eq('user_id', currentUser.id);
+
+                if (surveyType !== 'all') {
+                    query = query.eq('survey_type', surveyType);
+                }
+
+                const { data: responses } = await query.order('created_at', { ascending: false });
+
                 const container = document.getElementById('responsesContent');
-                
+
+                // اسم الاستبيان حسب النوع
+                let surveyName = '';
+                switch (surveyType) {
+                    case 'parents':
+                        surveyName = 'أولياء الأمور';
+                        break;
+                    case 'staff':
+                        surveyName = 'الكادر المدرسي';
+                        break;
+                    case 'students_1_4':
+                        surveyName = 'الطلبة الصفوف 1-4';
+                        break;
+                    case 'students_5_12':
+                        surveyName = 'الطلبة الصفوف الأكاديمية 5-12';
+                        break;
+                    case 'students_vocational':
+                        surveyName = 'الطلبة الصفوف المهنية 10-12';
+                        break;
+                    default:
+                        surveyName = '';
+                }
+
+                let surveyTitle = '';
+                switch (surveyType) {
+                    case 'parents':
+                        surveyTitle = 'استبيان أولياء الأمور';
+                        break;
+                    case 'staff':
+                        surveyTitle = 'استبيان الكادر المدرسي';
+                        break;
+                    case 'students_1_4':
+                        surveyTitle = 'استبيان الطلبة الصفوف 1-4';
+                        break;
+                    case 'students_5_12':
+                        surveyTitle = 'استبيان الطلبة الصفوف الأكاديمية 5-12';
+                        break;
+                    case 'students_vocational':
+                        surveyTitle = 'استبيان الطلبة الصفوف المهنية 10-12';
+                        break;
+                    default:
+                        surveyTitle = 'جميع الاستبيانات';
+                }
+
                 if (!responses || responses.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center">لا توجد ردود حتى الآن</p>';
+                    container.innerHTML = `<p class="text-gray-500 text-center">لا توجد ردود ${surveyName} حتى الآن</p>`;
                 } else {
                     // Generate statistics chart
-                    const chartHtml = generateStatisticsChart(responses);
-                    
+                    const chartHtml = generateStatisticsChart(responses, surveyType);
+
                     let html = `
                         <div class="mb-8">
-                            <h3 class="text-xl font-bold text-gray-800 mb-4">الإحصائيات والرسوم البيانية</h3>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">إحصائيات ${surveyTitle}</h3>
                             ${chartHtml}
                         </div>
                         <div class="space-y-4">
                             <h3 class="text-xl font-bold text-gray-800 mb-4">تفاصيل الردود الفردية</h3>
                     `;
-                    
+
                     responses.forEach((response, index) => {
                         const date = new Date(response.created_at).toLocaleDateString('en-GB');
+                        let responseType = surveyName;
+
                         html += `
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <div class="flex justify-between items-center mb-2">
-                                    <h4 class="font-medium">رد رقم ${index + 1}</h4>
+                                    <h4 class="font-medium">رد رقم ${index + 1} - ${responseType}</h4>
                                     <span class="text-sm text-gray-500">${date}</span>
                                 </div>
+                        `;
+
+                        // عرض المعلومات الشخصية حسب نوع الاستبيان
+                        if (response.survey_type === 'parents') {
+                            html += `
                                 <p><strong>الجنس:</strong> ${getGenderText(response.gender)}</p>
                                 <p><strong>عدد الأبناء:</strong> ${response.children_count}</p>
-                                ${response.suggestions ? `<p><strong>الاقتراحات:</strong> ${response.suggestions}</p>` : ''}
-                            </div>
-                        `;
+                            `;
+                        } else if (response.survey_type === 'staff') {
+                            html += `
+                                <p><strong>المنصب:</strong> ${getPositionText(response.position)}</p>
+                                <p><strong>سنوات الخبرة:</strong> ${getExperienceText(response.experience)}</p>
+                            `;
+                            if (response.special_answers && response.special_answers.length > 0) {
+                                html += `<p><strong>أسباب الرفاه المهني:</strong> ${response.special_answers.map(ans => getSpecialAnswerText(ans)).join(', ')}</p>`;
+                            }
+                        } else if (response.survey_type === 'students_1_4' || response.survey_type === 'students_5_12' || response.survey_type === 'students_vocational') {
+                            html += `<p><strong>اسم الطالب:</strong> ${response.student_name || ''}</p>`;
+                            html += `<p><strong>الصف الدراسي:</strong> ${response.grade || ''}</p>`;
+                            if (response.survey_type === 'students_vocational') {
+                                html += `<p><strong>اسم البرنامج المهني:</strong> ${response.vocational_program || ''}</p>`;
+                            }
+                        }
+
+                        if (response.suggestions) {
+                            html += `<p><strong>الاقتراحات:</strong> ${response.suggestions}</p>`;
+                        }
+
+                        html += '</div>';
                     });
                     html += '</div>';
                     container.innerHTML = html;
                 }
-                
+
                 document.getElementById('responsesSection').classList.remove('hidden');
             } catch (error) {
                 console.error('Error loading responses:', error);
@@ -604,16 +1129,31 @@
         }
 
         // Load survey for public access
-        async function loadSurvey(surveyId) {
+        async function loadSurvey(surveyId, surveyType = 'parents') {
             try {
                 const { data: user } = await supabase
                     .from('users')
                     .select('school_name')
                     .eq('unique_id', surveyId)
                     .single();
-                
+
                 if (user) {
-                    document.getElementById('surveySchoolName').textContent = user.school_name;
+                    currentSurveyType = surveyType;
+                    const survey = surveyTypes[surveyType];
+
+                    // Update survey title and intro safely
+                    const surveyTitleEl = document.getElementById('surveyTitle');
+                    if (surveyTitleEl) surveyTitleEl.textContent = survey.title;
+
+                    const surveyIntroEl = document.getElementById('surveyIntro');
+                    if (surveyIntroEl) surveyIntroEl.innerHTML = survey.intro;
+
+                    const surveySchoolNameEl = document.getElementById('surveySchoolName');
+                    if (surveySchoolNameEl) surveySchoolNameEl.textContent = user.school_name;
+
+                    // Generate questions for this survey type
+                    generateQuestions(surveyType);
+
                     showPage('surveyPage');
                 } else {
                     alert('رابط الاستبيان غير صحيح');
@@ -632,6 +1172,7 @@
             
             const urlParams = new URLSearchParams(window.location.search);
             const surveyId = urlParams.get('survey');
+            const surveyType = urlParams.get('type') || 'parents';
             
             if (!surveyId) {
                 alert('رابط الاستبيان غير صحيح');
@@ -651,9 +1192,17 @@
                     return;
                 }
                 
-                // Collect form data
-                const gender = document.getElementById('gender').value;
-                const childrenCount = document.getElementById('childrenCount').value;
+                // Collect personal info based on survey type
+                const survey = surveyTypes[surveyType];
+                const personalInfo = {};
+                
+                survey.personalInfo.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    if (element) {
+                        personalInfo[field.id] = element.value;
+                    }
+                });
+                
                 const suggestions = document.getElementById('suggestions').value;
                 
                 // Collect answers
@@ -663,16 +1212,30 @@
                     answers[`question_${index}`] = selectedRadio ? selectedRadio.value : null;
                 });
                 
+                // Collect special answers for staff survey
+                let specialAnswers = [];
+                if (surveyType === 'staff') {
+                    const checkedBoxes = document.querySelectorAll('input[name="special_question"]:checked');
+                    specialAnswers = Array.from(checkedBoxes).map(cb => cb.value);
+                }
+                
+                // Prepare response data
+                const responseData = {
+                    user_id: user.id,
+                    survey_type: surveyType,
+                    answers: answers,
+                    suggestions: suggestions,
+                    ...personalInfo
+                };
+                
+                if (surveyType === 'staff' && specialAnswers.length > 0) {
+                    responseData.special_answers = specialAnswers;
+                }
+                
                 // Save response
                 const { error } = await supabase
                     .from('responses')
-                    .insert([{
-                        user_id: user.id,
-                        gender: gender,
-                        children_count: parseInt(childrenCount),
-                        answers: answers,
-                        suggestions: suggestions
-                    }]);
+                    .insert([responseData]);
                 
                 if (error) throw error;
                 
@@ -701,6 +1264,39 @@
             };
             return genderMap[gender] || gender;
         }
+        
+        function getPositionText(position) {
+            const positionMap = {
+                'teacher': 'معلم/معلمة',
+                'admin_staff': 'موظف إداري',
+                'counselor': 'مرشد تربوي',
+                'coordinator': 'منسق',
+                'other': 'أخرى'
+            };
+            return positionMap[position] || position;
+        }
+        
+        function getExperienceText(experience) {
+            const experienceMap = {
+                '1': 'أقل من سنة',
+                '1-3': '1-3 سنوات',
+                '4-7': '4-7 سنوات',
+                '8+': '8 سنوات أو أكثر'
+            };
+            return experienceMap[experience] || experience;
+        }
+        
+        function getSpecialAnswerText(answer) {
+            const answerMap = {
+                'supportive_colleagues': 'الزملاء الداعمون',
+                'student_engagement': 'مشاركة الطلبة',
+                'collaborative_environment': 'بيئة العمل المشترك',
+                'resource_access': 'الوصول إلى الموارد',
+                'supportive_leadership': 'فريق القيادة النشط والداعم',
+                'none': 'لا شيء مما ذكر'
+            };
+            return answerMap[answer] || answer;
+        }
 
         function logout() {
             currentUser = null;
@@ -708,5 +1304,5 @@
             showPage('loginPage');
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9859ed56f2785ccf',t:'MTc1ODk2NDg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985a36d8537bc0f1',t:'MTc1ODk2Nzg1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
