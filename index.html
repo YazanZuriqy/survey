@@ -234,7 +234,19 @@
             if (surveyId) {
                 loadSurvey(surveyId);
             } else {
-                showPage('loginPage');
+                // Check if user is already logged in
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    try {
+                        currentUser = JSON.parse(savedUser);
+                        showDashboard();
+                    } catch (error) {
+                        localStorage.removeItem('currentUser');
+                        showPage('loginPage');
+                    }
+                } else {
+                    showPage('loginPage');
+                }
             }
             
             generateQuestions();
@@ -253,8 +265,8 @@
                 options.forEach(option => {
                     optionsHtml += `
                         <label class="flex items-center space-x-3 space-x-reverse p-3 hover:bg-gray-100 rounded-lg cursor-pointer">
-                            <input type="checkbox" name="question_${index}" value="${option.value}" 
-                                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <input type="radio" name="question_${index}" value="${option.value}" required
+                                   class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
                             <span class="text-gray-700">${option.text}</span>
                         </label>
                     `;
@@ -301,6 +313,7 @@
                     // Login existing user - only check password and school name
                     if (existingUser.password === password && existingUser.school_name === schoolName) {
                         currentUser = existingUser;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
                         showMessage('loginMessage', 'تم تسجيل الدخول بنجاح!', 'success');
                         setTimeout(showDashboard, 1000);
                     } else if (existingUser.password !== password) {
@@ -339,6 +352,7 @@
                     if (error) throw error;
                     
                     currentUser = data;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     showMessage('loginMessage', 'تم إنشاء الحساب بنجاح!', 'success');
                     setTimeout(showDashboard, 1500);
                 }
@@ -464,14 +478,10 @@
             responses.forEach(response => {
                 Object.keys(response.answers).forEach(questionKey => {
                     if (questionStats[questionKey]) {
-                        const answers = response.answers[questionKey];
-                        if (Array.isArray(answers)) {
-                            answers.forEach(answer => {
-                                if (questionStats[questionKey][answer] !== undefined) {
-                                    questionStats[questionKey][answer]++;
-                                    questionStats[questionKey].total++;
-                                }
-                            });
+                        const answer = response.answers[questionKey];
+                        if (answer && questionStats[questionKey][answer] !== undefined) {
+                            questionStats[questionKey][answer]++;
+                            questionStats[questionKey].total++;
                         }
                     }
                 });
@@ -539,22 +549,22 @@
                 </div>
             `;
             
-            // Generate top 5 questions chart
+            // Generate top 5 questions with lowest satisfaction
             const sortedQuestions = Object.entries(questionStats)
                 .map(([key, stats]) => ({
                     key,
                     question: stats.question,
-                    positivePercentage: stats.total > 0 ? (((stats.agree + stats.strongly_agree) / stats.total) * 100) : 0,
+                    negativePercentage: stats.total > 0 ? (((stats.strongly_disagree + stats.disagree) / stats.total) * 100) : 0,
                     total: stats.total
                 }))
                 .filter(q => q.total > 0)
-                .sort((a, b) => b.positivePercentage - a.positivePercentage)
+                .sort((a, b) => b.negativePercentage - a.negativePercentage)
                 .slice(0, 5);
             
             if (sortedQuestions.length > 0) {
                 chartHtml += `
                     <div class="bg-white p-6 rounded-xl border border-gray-200">
-                        <h4 class="text-lg font-bold text-gray-800 mb-4">أعلى 5 أسئلة من ناحية الرضا</h4>
+                        <h4 class="text-lg font-bold text-gray-800 mb-4">أعلى 5 أسئلة من ناحية عدم الرضا</h4>
                         <div class="space-y-4">
                 `;
                 
@@ -562,11 +572,11 @@
                     chartHtml += `
                         <div>
                             <div class="flex justify-between items-start mb-2">
-                                <p class="text-sm font-medium text-gray-700 flex-1 ml-4">${index + 1}. ${item.question.substring(0, 80)}...</p>
-                                <span class="text-sm font-bold text-green-600">${item.positivePercentage.toFixed(1)}%</span>
+                                <p class="text-sm font-medium text-gray-700 flex-1 ml-4">${index + 1}. ${item.question}</p>
+                                <span class="text-sm font-bold text-red-600">${item.negativePercentage.toFixed(1)}%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="bg-green-500 h-3 rounded-full" style="width: ${item.positivePercentage}%"></div>
+                                <div class="bg-red-500 h-3 rounded-full" style="width: ${item.negativePercentage}%"></div>
                             </div>
                         </div>
                     `;
@@ -649,8 +659,8 @@
                 // Collect answers
                 const answers = {};
                 questions.forEach((question, index) => {
-                    const checkboxes = document.querySelectorAll(`input[name="question_${index}"]:checked`);
-                    answers[`question_${index}`] = Array.from(checkboxes).map(cb => cb.value);
+                    const selectedRadio = document.querySelector(`input[name="question_${index}"]:checked`);
+                    answers[`question_${index}`] = selectedRadio ? selectedRadio.value : null;
                 });
                 
                 // Save response
@@ -694,8 +704,9 @@
 
         function logout() {
             currentUser = null;
+            localStorage.removeItem('currentUser');
             showPage('loginPage');
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9859d4f7c40cb1b7',t:'MTc1ODk2Mzg0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9859e42180905ccf',t:'MTc1ODk2NDQ3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
